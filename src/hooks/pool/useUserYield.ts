@@ -6,18 +6,12 @@ import {
 import BigNumber from 'bignumber.js';
 import memoize from 'micro-memoize';
 import { MarketDataType } from 'src/ui-config/marketsConfig';
-import {
-  displayGhoForMintableMarket,
-  GHO_MINTING_MARKETS,
-  weightedAverageAPY,
-} from 'src/utils/ghoUtilities';
+import { displayGhoForMintableMarket, weightedAverageAPY } from 'src/utils/ghoUtilities';
 
-import { useGhoPoolsFormattedReserve } from './useGhoPoolFormattedReserve';
 import {
   FormattedReservesAndIncentives,
   usePoolsFormattedReserves,
 } from './usePoolFormattedReserves';
-import { useUserGhoPoolsFormattedReserve } from './useUserGhoPoolFormattedReserve';
 import { useUserSummariesAndIncentives } from './useUserSummaryAndIncentives';
 import { combineQueries, SimplifiedUseQueryResult } from './utils';
 
@@ -129,42 +123,16 @@ export const useUserYields = (
   marketsData: MarketDataType[]
 ): SimplifiedUseQueryResult<UserYield>[] => {
   const poolsFormattedReservesQuery = usePoolsFormattedReserves(marketsData);
-  const ghoPoolsFormattedReserveQuery = useGhoPoolsFormattedReserve(marketsData);
-  const userGhoPoolsFormattedReserveQuery = useUserGhoPoolsFormattedReserve(marketsData);
   const userSummaryQuery = useUserSummariesAndIncentives(marketsData);
 
   return poolsFormattedReservesQuery.map((elem, index) => {
     const marketData = marketsData[index];
-    const selector = (
-      formattedPoolReserves: FormattedReservesAndIncentives[],
-      formattedGhoReserveData: FormattedGhoReserveData,
-      formattedGhoUserData: FormattedGhoUserData,
-      user: FormatUserSummaryAndIncentivesResponse
-    ) => {
-      return formatUserYield(
-        formattedPoolReserves,
-        formattedGhoReserveData,
-        formattedGhoUserData,
-        user,
-        marketData.market
-      );
-    };
     const ghoSelector = (
       formattedPoolReserves: FormattedReservesAndIncentives[],
       user: FormatUserSummaryAndIncentivesResponse
     ) => {
       return formatUserYield(formattedPoolReserves, undefined, undefined, user, marketData.market);
     };
-    if (GHO_MINTING_MARKETS.includes(marketData.marketTitle))
-      return combineQueries(
-        [
-          elem,
-          ghoPoolsFormattedReserveQuery[index],
-          userGhoPoolsFormattedReserveQuery[index],
-          userSummaryQuery[index],
-        ] as const,
-        selector
-      );
     return combineQueries([elem, userSummaryQuery[index]] as const, ghoSelector);
   });
 };

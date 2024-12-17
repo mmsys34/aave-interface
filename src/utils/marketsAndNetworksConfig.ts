@@ -1,6 +1,6 @@
-import { ChainId, ChainIdToNetwork } from '@aave/contract-helpers';
+import { ChainIdToNetwork } from '@aave/contract-helpers';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { ProviderWithSend } from 'src/components/transactions/GovVote/temporary/VotingMachineService';
+import { providers as etherProviders } from 'ethers';
 
 import {
   CustomMarket,
@@ -45,6 +45,11 @@ const FORK_WS_RPC_URL =
   process.env.NEXT_PUBLIC_FORK_URL_WS_RPC ||
   global?.window?.localStorage.getItem('forkWsRPCUrl') ||
   'ws://127.0.0.1:8545';
+
+export interface ProviderWithSend extends etherProviders.Provider {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  send<P = any, R = any>(method: string, params: Array<P>): Promise<R>;
+}
 
 /**
  * Generates network configs based on networkConfigs & fork settings.
@@ -92,24 +97,7 @@ export function getDefaultChainId() {
 }
 
 export function getSupportedChainIds(): number[] {
-  return Array.from(
-    Object.keys(marketsData)
-      .filter((value) => {
-        const isTestnet =
-          networkConfigs[marketsData[value as keyof typeof CustomMarket].chainId].isTestnet;
-
-        // If this is a staging environment, or the testnet toggle is on, only show testnets
-        if (STAGING_ENV || ENABLE_TESTNET) {
-          return isTestnet;
-        }
-
-        return !isTestnet;
-      })
-      .reduce(
-        (acc, value) => acc.add(marketsData[value as keyof typeof CustomMarket].chainId),
-        new Set<number>()
-      )
-  );
+  return [545, 747];
 }
 
 /**
@@ -132,7 +120,7 @@ const linkBuilder =
     return baseUrl;
   };
 
-export function getNetworkConfig(chainId: ChainId): NetworkConfig {
+export function getNetworkConfig(chainId: number): NetworkConfig {
   const config = networkConfigs[chainId];
   if (!config) {
     // this case can only ever occure when a wallet is connected with a unknown chainId which will not allow interaction
@@ -166,7 +154,7 @@ const providers: { [network: string]: ProviderWithSend } = {};
  * @param chainId
  * @returns provider or fallbackprovider in case multiple rpcs are configured
  */
-export const getProvider = (chainId: ChainId): ProviderWithSend => {
+export const getProvider = (chainId: number): ProviderWithSend => {
   if (!providers[chainId]) {
     const config = getNetworkConfig(chainId);
     const chainProviders: string[] = [];
@@ -189,67 +177,9 @@ export const getProvider = (chainId: ChainId): ProviderWithSend => {
 };
 
 export const getENSProvider = () => {
-  const chainId = 1;
+  const chainId = Number(process.env.NEXT_PUBLIC_DEFAULT_NETWORK || '545');
   const config = getNetworkConfig(chainId);
   return new StaticJsonRpcProvider(config.publicJsonRPCUrl[0], chainId);
-};
-
-const ammDisableProposal = 'https://governance-v2.aave.com/governance/proposal/44';
-const ustDisableProposal = 'https://governance-v2.aave.com/governance/proposal/75';
-const kncDisableProposal = 'https://governance-v2.aave.com/governance/proposal/69';
-const v2MainnetDisableProposal = 'https://governance-v2.aave.com/governance/proposal/111';
-const v2MainnetDisableProposal2 = 'https://governance-v2.aave.com/governance/proposal/125';
-const v2PolygonDisableProposal = 'https://governance-v2.aave.com/governance/proposal/124';
-
-export const frozenProposalMap: Record<string, string> = {
-  ['UST' + CustomMarket.proto_mainnet]: ustDisableProposal,
-  ['KNC' + CustomMarket.proto_mainnet]: kncDisableProposal,
-  ['UNIDAIUSDC' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIWBTCUSDC' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIDAIWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIUSDCWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIAAVEWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIBATWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNICRVWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNILINKWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIMKRWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIRENWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNISNXWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIUNIWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIWBTCWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['UNIYFIWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['BPTWBTCWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['BPTBALWETH' + CustomMarket.proto_mainnet]: ammDisableProposal,
-  ['BAL' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal,
-  ['CVX' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal,
-  ['REN' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal,
-  ['YFI' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['CRV' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['ZRX' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['MANA' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['1INCH' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['BAT' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['SUSD' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['ENJ' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['GUSD' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['AMPL' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['RAI' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['USDP' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['LUSD' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['XSUSHI' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['DPI' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['RENFIL' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['MKR' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['ENS' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['LINK' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['UNI' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['SNX' + CustomMarket.proto_mainnet]: v2MainnetDisableProposal2,
-  ['BAL' + CustomMarket.proto_polygon]: v2PolygonDisableProposal,
-  ['CRV' + CustomMarket.proto_polygon]: v2PolygonDisableProposal,
-  ['DPI' + CustomMarket.proto_polygon]: v2PolygonDisableProposal,
-  ['GHST' + CustomMarket.proto_polygon]: v2PolygonDisableProposal,
-  ['LINK' + CustomMarket.proto_polygon]: v2PolygonDisableProposal,
-  ['XSUSHI' + CustomMarket.proto_polygon]: v2PolygonDisableProposal,
 };
 
 // reexport so we can forbit config import

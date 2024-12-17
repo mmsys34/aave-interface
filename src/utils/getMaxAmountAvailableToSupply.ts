@@ -1,6 +1,6 @@
-import { API_ETH_MOCK_ADDRESS } from '@aave/contract-helpers';
-import { valueToBigNumber } from '@aave/math-utils';
+import { constants } from 'ethers';
 import BigNumber from 'bignumber.js';
+import { valueToBigNumber } from '@aave/math-utils';
 
 import { roundToTokenDecimals } from './utils';
 
@@ -32,10 +32,7 @@ export function getMaxAmountAvailableToSupply(
   let maxAmountToSupply = valueToBigNumber(walletBalance);
 
   // keep a bit for other transactions
-  if (
-    maxAmountToSupply.gt(0) &&
-    underlyingAsset.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()
-  ) {
+  if (maxAmountToSupply.gt(0) && underlyingAsset.toLowerCase() === constants.AddressZero) {
     maxAmountToSupply = maxAmountToSupply.minus(minRemainingBaseToken);
   }
 

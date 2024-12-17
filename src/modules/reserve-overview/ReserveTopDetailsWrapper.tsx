@@ -24,7 +24,6 @@ import {
   useAppDataContext,
 } from '../../hooks/app-data-provider/useAppDataProvider';
 import { AddTokenDropdown } from './AddTokenDropdown';
-import { GhoReserveTopDetails } from './Gho/GhoReserveTopDetails';
 import { ReserveTopDetails } from './ReserveTopDetails';
 import { TokenLinkDropdown } from './TokenLinkDropdown';
 
@@ -210,11 +209,7 @@ export const ReserveTopDetailsWrapper = ({ underlyingAsset }: ReserveTopDetailsP
           />
         </>
       )}
-      {isGho ? (
-        <GhoReserveTopDetails reserve={poolReserve} />
-      ) : (
-        <ReserveTopDetails underlyingAsset={underlyingAsset} />
-      )}
+      <ReserveTopDetails underlyingAsset={underlyingAsset} />
     </TopInfoPanel>
   );
 };

@@ -68,7 +68,6 @@ export const useTransactionHandler = ({
     generateCreditDelegationSignatureRequest,
     generatePermitPayloadForMigrationSupplyAsset,
     addTransaction,
-    signStakingApproval,
     currentMarketData,
   ] = useRootStore((state) => [
     state.signERC20Approval,
@@ -76,7 +75,6 @@ export const useTransactionHandler = ({
     state.generateCreditDelegationSignatureRequest,
     state.generatePermitPayloadForMigrationSupplyAsset,
     state.addTransaction,
-    state.signStakingApproval,
     state.currentMarketData,
   ]);
 
@@ -178,14 +176,6 @@ export const useTransactionHandler = ({
                   ...approval,
                   deadline,
                   spender: currentMarketData.addresses.V3_MIGRATOR || '',
-                })
-              );
-            } else if (approval.permitType === 'STAKE') {
-              unsignedPromisePayloads.push(
-                signStakingApproval({
-                  token: approval.underlyingAsset,
-                  amount: approval.amount,
-                  deadline,
                 })
               );
             }

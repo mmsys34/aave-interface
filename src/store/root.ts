@@ -4,11 +4,9 @@ import create from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 
 import { AnalyticsSlice, createAnalyticsSlice } from './analyticsSlice';
-import { createGovernanceSlice, GovernanceSlice } from './governanceSlice';
 import { createLayoutSlice, LayoutSlice } from './layoutSlice';
 import { createPoolSlice, PoolSlice } from './poolSlice';
 import { createProtocolDataSlice, ProtocolDataSlice } from './protocolDataSlice';
-import { createStakeSlice, StakeSlice } from './stakeSlice';
 import { createTransactionsSlice, TransactionsSlice } from './transactionsSlice';
 import { getQueryParameter } from './utils/queryParams';
 import { createV3MigrationSlice, V3MigrationSlice } from './v3MigrationSlice';
@@ -17,11 +15,9 @@ import { createWalletSlice, WalletSlice } from './walletSlice';
 
 enableMapSet();
 
-export type RootStore = StakeSlice &
-  ProtocolDataSlice &
+export type RootStore = ProtocolDataSlice &
   WalletSlice &
   PoolSlice &
-  GovernanceSlice &
   V3MigrationSlice &
   WalletDomainsSlice &
   AnalyticsSlice &
@@ -32,11 +28,9 @@ export const useRootStore = create<RootStore>()(
   subscribeWithSelector(
     devtools((...args) => {
       return {
-        ...createStakeSlice(...args),
         ...createProtocolDataSlice(...args),
         ...createWalletSlice(...args),
         ...createPoolSlice(...args),
-        ...createGovernanceSlice(...args),
         ...createV3MigrationSlice(...args),
         ...createWalletDomainsSlice(...args),
         ...createAnalyticsSlice(...args),

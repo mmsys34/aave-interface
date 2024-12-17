@@ -1,4 +1,3 @@
-import { API_ETH_MOCK_ADDRESS } from '@aave/contract-helpers';
 import {
   calculateHealthFactorFromBalancesBigUnits,
   USD_DECIMALS,
@@ -33,6 +32,7 @@ import {
 import { BorrowActions } from './BorrowActions';
 import { BorrowAmountWarning } from './BorrowAmountWarning';
 import { ParameterChangewarning } from './ParameterChangewarning';
+import { constants } from 'ethers';
 
 export enum ErrorType {
   STABLE_RATE_NOT_ENABLED,
@@ -222,7 +222,7 @@ export const BorrowModalContent = ({
         amountToBorrow={amount}
         poolAddress={
           borrowUnWrapped && poolReserve.isWrappedBaseAsset
-            ? API_ETH_MOCK_ADDRESS
+            ? constants.AddressZero
             : poolReserve.underlyingAsset
         }
         isWrongNetwork={isWrongNetwork}

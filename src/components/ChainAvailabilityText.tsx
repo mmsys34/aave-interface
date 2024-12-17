@@ -1,17 +1,16 @@
-import { ChainId } from '@aave/contract-helpers';
 import { Trans } from '@lingui/macro';
 import { Box, BoxProps, Typography } from '@mui/material';
 import { BaseNetworkConfig, networkConfigs } from 'src/ui-config/networksConfig';
 
 type ChainAvailabilityTextProps = {
-  chainId: ChainId;
+  chainId: number;
   wrapperSx: BoxProps['sx'];
 };
 
-const networkToTextMapper = (chainId: ChainId, networkConfig: BaseNetworkConfig) => {
+const networkToTextMapper = (chainId: number, networkConfig: BaseNetworkConfig) => {
   switch (chainId) {
-    case ChainId.mainnet:
-      return 'Ethereum Mainnet';
+    case 747:
+      return 'EVM on Flow';
     default:
       return networkConfig.name;
   }

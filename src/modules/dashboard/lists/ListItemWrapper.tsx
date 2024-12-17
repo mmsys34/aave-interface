@@ -1,12 +1,10 @@
 import { Tooltip, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 import { BorrowDisabledToolTip } from 'src/components/infoTooltips/BorrowDisabledToolTip';
-import { OffboardingTooltip } from 'src/components/infoTooltips/OffboardingToolTip';
 import { PausedTooltip } from 'src/components/infoTooltips/PausedTooltip';
 import { SpkAirdropTooltip } from 'src/components/infoTooltips/SpkAirdropTooltip';
 import { StETHCollateralToolTip } from 'src/components/infoTooltips/StETHCollateralToolTip';
 import { SuperFestTooltip } from 'src/components/infoTooltips/SuperFestTooltip';
-import { AssetsBeingOffboarded } from 'src/components/Warnings/OffboardingWarning';
 import { useAssetCaps } from 'src/hooks/useAssetCaps';
 import { useRootStore } from 'src/store/root';
 import { CustomMarket } from 'src/ui-config/marketsConfig';
@@ -15,7 +13,6 @@ import { DASHBOARD } from 'src/utils/mixPanelEvents';
 import { ExternalIncentivesTooltipsConfig } from 'src/utils/utils';
 
 import { AMPLToolTip } from '../../../components/infoTooltips/AMPLToolTip';
-import { FrozenTooltip } from '../../../components/infoTooltips/FrozenTooltip';
 import { RenFILToolTip } from '../../../components/infoTooltips/RenFILToolTip';
 import { ListColumn } from '../../../components/lists/ListColumn';
 import { ListItem } from '../../../components/lists/ListItem';
@@ -59,11 +56,9 @@ export const ListItemWrapper = ({
 }: ListItemWrapperProps) => {
   const { supplyCap, borrowCap, debtCeiling } = useAssetCaps();
 
-  const showFrozenTooltip = frozen && symbol !== 'renFIL' && symbol !== 'BUSD';
   const showRenFilTooltip = frozen && symbol === 'renFIL';
   const showAmplTooltip = !frozen && symbol === 'AMPL';
   const showstETHTooltip = symbol == 'stETH';
-  const offboardingDiscussion = AssetsBeingOffboarded[currentMarket]?.[symbol];
   const showBorrowDisabledTooltip = !frozen && !borrowEnabled;
   const trackEvent = useRootStore((store) => store.trackEvent);
 
@@ -93,11 +88,9 @@ export const ListItemWrapper = ({
         {paused && <PausedTooltip />}
         {showExternalIncentivesTooltips.superFestRewards && <SuperFestTooltip />}
         {showExternalIncentivesTooltips.spkAirdrop && <SpkAirdropTooltip />}
-        {showFrozenTooltip && <FrozenTooltip symbol={symbol} currentMarket={currentMarket} />}
         {showRenFilTooltip && <RenFILToolTip />}
         {showAmplTooltip && <AMPLToolTip />}
         {showstETHTooltip && <StETHCollateralToolTip />}
-        {offboardingDiscussion && <OffboardingTooltip discussionLink={offboardingDiscussion} />}
         {showBorrowDisabledTooltip && (
           <BorrowDisabledToolTip symbol={symbol} currentMarket={currentMarket} />
         )}

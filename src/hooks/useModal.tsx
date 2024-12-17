@@ -5,16 +5,12 @@ import { useRootStore } from 'src/store/root';
 import { TxErrorType } from 'src/ui-config/errorMapping';
 import { GENERAL } from 'src/utils/mixPanelEvents';
 
-import { Proposal } from './governance/useProposals';
-
 export enum ModalType {
   Supply,
   Withdraw,
   Borrow,
   Repay,
   CollateralChange,
-  Stake,
-  Unstake,
   StakeCooldown,
   StakeRewardClaim,
   ClaimRewards,
@@ -35,7 +31,6 @@ export enum ModalType {
 
 export interface ModalArgsType {
   underlyingAsset?: string;
-  proposal?: Proposal;
   support?: boolean;
   power?: string;
   icon?: string;
@@ -89,11 +84,6 @@ export interface ModalContextType<T extends ModalArgsType> {
     funnel: string,
     usageAsCollateralEnabledOnUser: boolean
   ) => void;
-  openStake: (stakeAssetName: Stake, icon: string) => void;
-  openUnstake: (stakeAssetName: Stake, icon: string) => void;
-  openStakeCooldown: (stakeAssetName: Stake, icon: string) => void;
-  openStakeRewardsClaim: (stakeAssetName: Stake, icon: string) => void;
-  openStakeRewardsRestakeClaim: (stakeAssetName: Stake, icon: string) => void;
   openClaimRewards: () => void;
   openEmode: () => void;
   openFaucet: (underlyingAsset: string) => void;
@@ -102,7 +92,6 @@ export interface ModalContextType<T extends ModalArgsType> {
   openGovDelegation: () => void;
   openRevokeGovDelegation: () => void;
   openV3Migration: () => void;
-  openGovVote: (proposal: Proposal, support: boolean, power: string) => void;
   openSwitch: (underlyingAsset?: string, chainId?: number) => void;
   openBridge: () => void;
   openStakingMigrate: () => void;
@@ -230,34 +219,6 @@ export const ModalContextProvider: React.FC = ({ children }) => {
             funnel,
           });
         },
-        openStake: (stakeAssetName, icon) => {
-          trackEvent(GENERAL.OPEN_MODAL, { modal: 'Stake', assetName: stakeAssetName });
-          setType(ModalType.Stake);
-          setArgs({ stakeAssetName, icon });
-        },
-        openUnstake: (stakeAssetName, icon) => {
-          trackEvent(GENERAL.OPEN_MODAL, { modal: 'Untake', assetName: stakeAssetName });
-          setType(ModalType.Unstake);
-          setArgs({ stakeAssetName, icon });
-        },
-        openStakeCooldown: (stakeAssetName, icon) => {
-          trackEvent(GENERAL.OPEN_MODAL, { modal: 'Cooldown', assetName: stakeAssetName });
-          setType(ModalType.StakeCooldown);
-          setArgs({ stakeAssetName, icon });
-        },
-        openStakeRewardsClaim: (stakeAssetName, icon) => {
-          trackEvent(GENERAL.OPEN_MODAL, { modal: 'Stake Rewards', assetName: stakeAssetName });
-          setType(ModalType.StakeRewardClaim);
-          setArgs({ stakeAssetName, icon });
-        },
-        openStakeRewardsRestakeClaim: (stakeAssetName, icon) => {
-          trackEvent(GENERAL.OPEN_MODAL, {
-            modal: 'Restatke Stake Rewards',
-            assetName: stakeAssetName,
-          });
-          setType(ModalType.StakeRewardsClaimRestake);
-          setArgs({ stakeAssetName, icon });
-        },
         openClaimRewards: () => {
           trackEvent(GENERAL.OPEN_MODAL, { modal: 'Claim' });
           setType(ModalType.ClaimRewards);
@@ -295,15 +256,6 @@ export const ModalContextProvider: React.FC = ({ children }) => {
         openRevokeGovDelegation: () => {
           trackEvent(GENERAL.OPEN_MODAL, { modal: 'Revoke Governance Delegation' });
           setType(ModalType.RevokeGovDelegation);
-        },
-        openGovVote: (proposal, support, power) => {
-          trackEvent(GENERAL.OPEN_MODAL, {
-            modal: 'Vote',
-            proposalId: proposal.subgraphProposal.id,
-            voteSide: support,
-          });
-          setType(ModalType.GovVote);
-          setArgs({ proposal, support, power });
         },
         openGovRepresentatives: (representatives) => {
           trackEvent(GENERAL.OPEN_MODAL, { modal: 'Representatives' });

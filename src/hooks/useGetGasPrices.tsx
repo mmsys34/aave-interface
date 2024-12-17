@@ -46,7 +46,7 @@ export const useGasPrices = (chainIds: number[]) => {
       queryFn: () =>
         jsonRpcProvider(chainId)
           .getFeeData()
-          .then((feeData) => rawToGasPriceData(feeData)),
+          .then((feeData: FeeData) => rawToGasPriceData(feeData)),
       refetchInterval: POLLING_INTERVAL,
     })),
   });

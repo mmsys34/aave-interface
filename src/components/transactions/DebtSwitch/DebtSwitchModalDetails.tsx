@@ -3,14 +3,11 @@ import { ArrowNarrowRightIcon } from '@heroicons/react/solid';
 import { Trans } from '@lingui/macro';
 import { Box, Skeleton, SvgIcon } from '@mui/material';
 import React from 'react';
-import { GhoIncentivesCard } from 'src/components/incentives/GhoIncentivesCard';
 import { FormattedNumber } from 'src/components/primitives/FormattedNumber';
-import { ROUTES } from 'src/components/primitives/Link';
 import { Row } from 'src/components/primitives/Row';
 import { TokenIcon } from 'src/components/primitives/TokenIcon';
 import { DetailsIncentivesLine } from 'src/components/transactions/FlowCommons/TxModalDetails';
-import { CustomMarket } from 'src/ui-config/marketsConfig';
-import { displayGhoForMintableMarket, weightedAverageAPY } from 'src/utils/ghoUtilities';
+import { weightedAverageAPY } from 'src/utils/ghoUtilities';
 
 import { ComputedUserReserveData } from '../../../hooks/app-data-provider/useAppDataProvider';
 import { GhoRange } from './DebtSwitchModalContent';
@@ -25,7 +22,6 @@ export type DebtSwitchModalDetailsProps = {
   sourceBorrowAPY: string;
   targetBorrowAPY: string;
   ghoData?: GhoRange;
-  currentMarket: CustomMarket;
 };
 const ArrowRightIcon = (
   <SvgIcon color="primary" sx={{ fontSize: '14px', mx: 1 }}>
@@ -43,7 +39,6 @@ export const DebtSwitchModalDetails = ({
   sourceBorrowAPY,
   targetBorrowAPY,
   ghoData,
-  currentMarket,
 }: DebtSwitchModalDetailsProps) => {
   // if there is an inputAmount + GHO -> re-calculate max
   const sourceAmountAfterSwap = valueToBigNumber(sourceBalance).minus(valueToBigNumber(fromAmount));
@@ -86,55 +81,9 @@ export const DebtSwitchModalDetails = ({
             <Skeleton variant="rectangular" height={20} width={100} sx={{ borderRadius: '4px' }} />
           ) : (
             <>
-              {displayGhoForMintableMarket({
-                symbol: switchSource.reserve.symbol,
-                currentMarket,
-              }) && ghoData ? (
-                <GhoIncentivesCard
-                  useApyRange={false}
-                  rangeValues={ghoData.ghoApyRange}
-                  variant="main14"
-                  color="text.secondary"
-                  value={ghoData.userCurrentBorrowApy}
-                  data-cy={`apyType`}
-                  stkAaveBalance={ghoData.userDiscountTokenBalance}
-                  ghoRoute={
-                    ROUTES.reserveOverview(switchSource.underlyingAsset ?? '', currentMarket) +
-                    '/#discount'
-                  }
-                  forceShowTooltip
-                  withTokenIcon={ghoData.qualifiesForDiscount}
-                  userQualifiesForDiscount={ghoData.qualifiesForDiscount}
-                />
-              ) : (
-                <FormattedNumber value={sourceBorrowAPY} variant="secondary14" percent />
-              )}
+              <FormattedNumber value={sourceBorrowAPY} variant="secondary14" percent />
               {ArrowRightIcon}
-              {displayGhoForMintableMarket({
-                symbol: switchTarget.reserve.symbol,
-                currentMarket,
-              }) && ghoData ? (
-                <GhoIncentivesCard
-                  useApyRange={ghoData.qualifiesForDiscount && !ghoData.inputAmount}
-                  rangeValues={ghoData.inputAmount === 0 ? ghoData.ghoApyRange : switchToRange}
-                  variant="main14"
-                  color="text.secondary"
-                  value={
-                    ghoData.inputAmount === 0 ? ghoData.userBorrowApyAfterMaxSwitch : switchToApy
-                  }
-                  data-cy={`apyType`}
-                  stkAaveBalance={ghoData.userDiscountTokenBalance}
-                  ghoRoute={
-                    ROUTES.reserveOverview(switchTarget.underlyingAsset ?? '', currentMarket) +
-                    '/#discount'
-                  }
-                  forceShowTooltip
-                  withTokenIcon={ghoData.qualifiesForDiscount}
-                  userQualifiesForDiscount={ghoData.qualifiesForDiscount}
-                />
-              ) : (
-                <FormattedNumber value={targetBorrowAPY} variant="secondary14" percent />
-              )}
+              <FormattedNumber value={targetBorrowAPY} variant="secondary14" percent />
             </>
           )}
         </Box>

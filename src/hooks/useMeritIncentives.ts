@@ -1,6 +1,5 @@
 import { ProtocolAction } from '@aave/contract-helpers';
 import { ReserveIncentiveResponse } from '@aave/math-utils/dist/esm/formatters/incentive/calculate-reserve-incentives';
-import { AaveV3Avalanche, AaveV3Base, AaveV3Ethereum } from '@bgd-labs/aave-address-book';
 import { useQuery } from '@tanstack/react-query';
 import { CustomMarket } from 'src/ui-config/marketsConfig';
 
@@ -44,119 +43,15 @@ const getMeritData = (market: string, symbol: string): MeritReserveIncentiveData
 
 const MERIT_DATA_MAP: Record<string, Record<string, MeritReserveIncentiveData[]>> = {
   [CustomMarket.proto_mainnet_v3]: {
-    GHO: [
-      {
-        action: MeritAction.ETHEREUM_STKGHO,
-        rewardTokenAddress: AaveV3Ethereum.ASSETS.GHO.UNDERLYING,
-        rewardTokenSymbol: 'GHO',
-      },
-    ],
-    cbBTC: [
-      {
-        action: MeritAction.SUPPLY_CBBTC_BORROW_USDC,
-        rewardTokenAddress: AaveV3Ethereum.ASSETS.USDC.A_TOKEN,
-        rewardTokenSymbol: 'aEthUSDC',
-        protocolAction: ProtocolAction.supply,
-        customMessage: 'You must supply cbBTC and borrow USDC in order to receive merit rewards.',
-      },
-    ],
-    USDC: [
-      {
-        action: MeritAction.SUPPLY_CBBTC_BORROW_USDC,
-        rewardTokenAddress: AaveV3Ethereum.ASSETS.USDC.A_TOKEN,
-        rewardTokenSymbol: 'aEthUSDC',
-        protocolAction: ProtocolAction.borrow,
-        customMessage: 'You must supply cbBTC and borrow USDC in order to receive merit rewards.',
-      },
-    ],
-    WBTC: [
-      {
-        action: MeritAction.SUPPLY_WBTC_BORROW_USDT,
-        rewardTokenAddress: AaveV3Ethereum.ASSETS.USDT.A_TOKEN,
-        rewardTokenSymbol: 'aEthUSDT',
-        protocolAction: ProtocolAction.supply,
-        customMessage: 'You must supply wBTC and borrow USDT in order to receive merit rewards.',
-      },
-    ],
-    USDT: [
-      {
-        action: MeritAction.SUPPLY_WBTC_BORROW_USDT,
-        rewardTokenAddress: AaveV3Ethereum.ASSETS.USDT.A_TOKEN,
-        rewardTokenSymbol: 'aEthUSDT',
-        protocolAction: ProtocolAction.borrow,
-        customMessage: 'You must supply wBTC and borrow USDT in order to receive merit rewards.',
-      },
-    ],
-    PYUSD: [
-      {
-        action: MeritAction.ETHEREUM_SUPPLY_PYUSD,
-        rewardTokenAddress: AaveV3Ethereum.ASSETS.PYUSD.A_TOKEN,
-        rewardTokenSymbol: 'aEthPYUSD',
-        protocolAction: ProtocolAction.supply,
-        customForumLink:
-          'https://governance.aave.com/t/arfc-pyusd-reserve-configuration-update-incentive-campaign/19573',
-        customMessage:
-          'Borrowing of some assets may impact the amount of rewards you are eligible for. Please check the forum post for the full eligibility criteria.'
-      },
-    ],
-  },
-  [CustomMarket.proto_base_v3]: {
-    cbBTC: [
-      {
-        action: MeritAction.BASE_SUPPLY_CBBTC,
-        rewardTokenAddress: AaveV3Base.ASSETS.USDC.UNDERLYING,
-        rewardTokenSymbol: 'aBasUSDC',
-        protocolAction: ProtocolAction.supply,
-      },
-    ],
-    USDC: [
-      {
-        action: MeritAction.BASE_SUPPLY_USDC,
-        rewardTokenAddress: AaveV3Base.ASSETS.USDC.UNDERLYING,
-        rewardTokenSymbol: 'aBasUSDC',
-        protocolAction: ProtocolAction.supply,
-      },
-      {
-        action: MeritAction.BASE_BORROW_USDC,
-        rewardTokenAddress: AaveV3Base.ASSETS.USDC.UNDERLYING,
-        rewardTokenSymbol: 'aBasUSDC',
-        protocolAction: ProtocolAction.borrow,
-      },
-    ],
-  },
-  [CustomMarket.proto_avalanche_v3]: {
-    ['BTC.b']: [
-      {
-        action: MeritAction.AVALANCHE_SUPPLY_BTCB,
-        rewardTokenAddress: AaveV3Avalanche.ASSETS.BTCb.A_TOKEN,
-        rewardTokenSymbol: 'aAvaSAVAX',
-        protocolAction: ProtocolAction.supply,
-      },
-    ],
-    USDC: [
-      {
-        action: MeritAction.AVALANCHE_SUPPLY_USDC,
-        rewardTokenAddress: AaveV3Avalanche.ASSETS.USDC.A_TOKEN,
-        rewardTokenSymbol: 'aAvaSAVAX',
-        protocolAction: ProtocolAction.supply,
-      },
-    ],
-    USDt: [
-      {
-        action: MeritAction.AVALANCHE_SUPPLY_USDT,
-        rewardTokenAddress: AaveV3Avalanche.ASSETS.USDt.A_TOKEN,
-        rewardTokenSymbol: 'aAvaSAVAX',
-        protocolAction: ProtocolAction.supply,
-      },
-    ],
-    sAVAX: [
-      {
-        action: MeritAction.AVALANCHE_SUPPLY_SAVAX,
-        rewardTokenAddress: AaveV3Avalanche.ASSETS.sAVAX.A_TOKEN,
-        rewardTokenSymbol: 'aAvaSAVAX',
-        protocolAction: ProtocolAction.supply,
-      },
-    ],
+    // USDC: [
+    //   {
+    //     action: MeritAction.SUPPLY_CBBTC_BORROW_USDC,
+    //     rewardTokenAddress: AaveV3Ethereum.ASSETS.USDC.A_TOKEN,
+    //     rewardTokenSymbol: 'aEthUSDC',
+    //     protocolAction: ProtocolAction.borrow,
+    //     customMessage: 'You must supply cbBTC and borrow USDC in order to receive merit rewards.',
+    //   },
+    // ],
   },
 };
 

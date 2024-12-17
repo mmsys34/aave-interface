@@ -29,10 +29,6 @@ const SwitchModal = dynamic(() =>
   import('src/components/transactions/Switch/SwitchModal').then((module) => module.SwitchModal)
 );
 
-const BridgeModal = dynamic(() =>
-  import('src/components/transactions/Bridge/BridgeModal').then((module) => module.BridgeModal)
-);
-
 const BorrowModal = dynamic(() =>
   import('src/components/transactions/Borrow/BorrowModal').then((module) => module.BorrowModal)
 );
@@ -69,11 +65,6 @@ const SwapModal = dynamic(() =>
 const WithdrawModal = dynamic(() =>
   import('src/components/transactions/Withdraw/WithdrawModal').then(
     (module) => module.WithdrawModal
-  )
-);
-const StakingMigrateModal = dynamic(() =>
-  import('src/components/transactions/StakingMigrate/StakingMigrateModal').then(
-    (module) => module.StakingMigrateModal
   )
 );
 
@@ -154,8 +145,6 @@ export default function MyApp(props: MyAppProps) {
                           <FaucetModal />
                           <TransactionEventHandler />
                           <SwitchModal />
-                          <StakingMigrateModal />
-                          <BridgeModal />
                         </GasStationProvider>
                       </AppDataProvider>
                     </SharedDependenciesProvider>

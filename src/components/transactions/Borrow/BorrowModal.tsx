@@ -2,21 +2,17 @@ import { Trans } from '@lingui/macro';
 import React, { useState } from 'react';
 import { UserAuthenticated } from 'src/components/UserAuthenticated';
 import { ModalContextType, ModalType, useModalContext } from 'src/hooks/useModal';
-import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
 import { useRootStore } from 'src/store/root';
-import { displayGhoForMintableMarket } from 'src/utils/ghoUtilities';
 import { GENERAL } from 'src/utils/mixPanelEvents';
 
 import { BasicModal } from '../../primitives/BasicModal';
 import { ModalWrapper } from '../FlowCommons/ModalWrapper';
 import { BorrowModalContent } from './BorrowModalContent';
-import { GhoBorrowModalContent } from './GhoBorrowModalContent';
 
 export const BorrowModal = () => {
   const { type, close, args } = useModalContext() as ModalContextType<{
     underlyingAsset: string;
   }>;
-  const { currentMarket } = useProtocolDataContext();
 
   const [borrowUnWrapped, setBorrowUnWrapped] = useState(true);
   const [trackEvent] = useRootStore((store) => [store.trackEvent]);
@@ -40,18 +36,14 @@ export const BorrowModal = () => {
       >
         {(params) => (
           <UserAuthenticated>
-            {(user) =>
-              displayGhoForMintableMarket({ symbol: params.symbol, currentMarket }) ? (
-                <GhoBorrowModalContent {...params} user={user} />
-              ) : (
-                <BorrowModalContent
-                  {...params}
-                  user={user}
-                  unwrap={borrowUnWrapped}
-                  setUnwrap={handleBorrowUnwrapped}
-                />
-              )
-            }
+            {(user) => (
+              <BorrowModalContent
+                {...params}
+                user={user}
+                unwrap={borrowUnWrapped}
+                setUnwrap={handleBorrowUnwrapped}
+              />
+            )}
           </UserAuthenticated>
         )}
       </ModalWrapper>

@@ -38,7 +38,6 @@ import { ListButtonsColumn } from '../ListButtonsColumn';
 import { ListLoader } from '../ListLoader';
 import { BorrowAssetsListItem } from './BorrowAssetsListItem';
 import { BorrowAssetsListMobileItem } from './BorrowAssetsListMobileItem';
-import { GhoBorrowAssetsListItem } from './GhoBorrowAssetsListItem';
 
 const head = [
   {
@@ -230,25 +229,11 @@ export const BorrowAssetsList = () => {
               </>
             )}
           </Box>
-          {ghoReserve &&
-            !downToXSM &&
-            displayGhoForMintableMarket({ symbol: ghoReserve.symbol, currentMarket }) && (
-              <AssetCapsProvider asset={ghoReserve.reserve}>
-                <GhoBorrowAssetsListItem {...ghoReserve} />
-              </AssetCapsProvider>
-            )}
         </>
       }
     >
       <>
         {!downToXSM && !!borrowReserves.length && <RenderHeader />}
-        {ghoReserve &&
-          downToXSM &&
-          displayGhoForMintableMarket({ symbol: ghoReserve.symbol, currentMarket }) && (
-            <AssetCapsProvider asset={ghoReserve.reserve}>
-              <GhoBorrowAssetsListItem {...ghoReserve} />
-            </AssetCapsProvider>
-          )}
         {sortedReserves?.map((item) => (
           <Fragment key={item.underlyingAsset}>
             <AssetCapsProvider asset={item.reserve}>

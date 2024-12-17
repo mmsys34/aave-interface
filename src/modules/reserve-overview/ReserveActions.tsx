@@ -12,7 +12,6 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import BigNumber from 'bignumber.js';
 import React, { ReactNode, useState } from 'react';
 import { WalletIcon } from 'src/components/icons/WalletIcon';
 import { getMarketInfoById } from 'src/components/MarketSwitcher';
@@ -30,10 +29,7 @@ import { useModalContext } from 'src/hooks/useModal';
 import { useWeb3Context } from 'src/libs/hooks/useWeb3Context';
 import { BuyWithFiat } from 'src/modules/staking/BuyWithFiat';
 import { useRootStore } from 'src/store/root';
-import {
-  getMaxAmountAvailableToBorrow,
-  getMaxGhoMintAmount,
-} from 'src/utils/getMaxAmountAvailableToBorrow';
+import { getMaxAmountAvailableToBorrow } from 'src/utils/getMaxAmountAvailableToBorrow';
 import { getMaxAmountAvailableToSupply } from 'src/utils/getMaxAmountAvailableToSupply';
 import { displayGhoForMintableMarket } from 'src/utils/ghoUtilities';
 import { GENERAL } from 'src/utils/mixPanelEvents';
@@ -68,12 +64,7 @@ export const ReserveActions = ({ reserve }: ReserveActionsProps) => {
   const currentMarket = useRootStore((store) => store.currentMarket);
   const currentNetworkConfig = useRootStore((store) => store.currentNetworkConfig);
   const currentMarketData = useRootStore((store) => store.currentMarketData);
-  const {
-    ghoReserveData,
-    user,
-    loading: loadingReserves,
-    marketReferencePriceInUsd,
-  } = useAppDataContext();
+  const { user, loading: loadingReserves, marketReferencePriceInUsd } = useAppDataContext();
   const { walletBalances, loading: loadingWalletBalance } = useWalletBalances(currentMarketData);
 
   const [minRemainingBaseTokenBalance] = useRootStore((store) => [
@@ -89,14 +80,7 @@ export const ReserveActions = ({ reserve }: ReserveActionsProps) => {
   let maxAmountToSupply = '0';
   const isGho = displayGhoForMintableMarket({ symbol: reserve.symbol, currentMarket });
 
-  if (isGho && user) {
-    const maxMintAmount = getMaxGhoMintAmount(user, reserve);
-    maxAmountToBorrow = BigNumber.min(
-      maxMintAmount,
-      valueToBigNumber(ghoReserveData.aaveFacilitatorRemainingCapacity)
-    ).toString();
-    maxAmountToSupply = '0';
-  } else if (user) {
+  if (user) {
     maxAmountToBorrow = getMaxAmountAvailableToBorrow(reserve, user).toString();
 
     maxAmountToSupply = getMaxAmountAvailableToSupply(

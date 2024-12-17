@@ -50,7 +50,6 @@ import { SwapActionProps } from 'src/components/transactions/Swap/SwapActions';
 import { WithdrawAndSwitchActionProps } from 'src/components/transactions/Withdraw/WithdrawAndSwitchActions';
 import { Approval } from 'src/helpers/useTransactionHandler';
 import { FormattedReservesAndIncentives } from 'src/hooks/pool/usePoolFormattedReserves';
-import { minBaseTokenRemainingByNetwork, optimizedPath } from 'src/utils/utils';
 import { StateCreator } from 'zustand';
 
 import { RootStore } from './root';
@@ -284,7 +283,7 @@ export const createPoolSlice: StateCreator<
       return pool.withdraw({
         ...args,
         user,
-        useOptimizedPath: optimizedPath(get().currentChainId),
+        useOptimizedPath: false,
       });
     },
     setUsageAsCollateral: async (args) => {
@@ -696,15 +695,12 @@ export const createPoolSlice: StateCreator<
       }
     },
     useOptimizedPath: () => {
-      return get().currentMarketData.v3 && optimizedPath(get().currentChainId);
+      return get().currentMarketData.v3 && false;
     },
     poolComputed: {
       get minRemainingBaseTokenBalance() {
         if (!get()) return '0.001';
-        const { currentNetworkConfig, currentChainId } = { ...get() };
-        const chainId = currentNetworkConfig.underlyingChainId || currentChainId;
-        const min = minBaseTokenRemainingByNetwork[chainId];
-        return min || '0.001';
+        return '0.001';
       },
     },
     generateSignatureRequest: async ({ token, amount, deadline, spender }, opts = {}) => {

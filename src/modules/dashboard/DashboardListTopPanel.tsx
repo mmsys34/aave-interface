@@ -5,7 +5,6 @@ import { useRootStore } from 'src/store/root';
 import { ENABLE_TESTNET, STAGING_ENV } from 'src/utils/marketsAndNetworksConfig';
 import { DASHBOARD } from 'src/utils/mixPanelEvents';
 
-import { BridgeButton } from '../../components/BridgeButton';
 import { toggleLocalStorageClick } from '../../helpers/toggle-local-storage-click';
 import { NetworkConfig } from '../../ui-config/networksConfig';
 
@@ -48,7 +47,6 @@ export const DashboardListTopPanel = ({
       />
 
       {(STAGING_ENV || ENABLE_TESTNET) && <FaucetButton />}
-      {!ENABLE_TESTNET && <BridgeButton bridge={bridge} />}
     </Box>
   );
 };

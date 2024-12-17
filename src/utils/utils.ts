@@ -1,4 +1,4 @@
-import { ChainId, ProtocolAction } from '@aave/contract-helpers';
+import { ProtocolAction } from '@aave/contract-helpers';
 import { BigNumberValue, USD_DECIMALS, valueToBigNumber } from '@aave/math-utils';
 
 import { CustomMarket } from './marketsAndNetworksConfig';
@@ -33,20 +33,6 @@ export const makeCancelable = <T>(promise: Promise<T>) => {
       hasCanceled_ = true;
     },
   };
-};
-
-export const optimizedPath = (currentChainId: ChainId) => {
-  return (
-    currentChainId === ChainId.arbitrum_one || currentChainId === ChainId.optimism
-    // ||
-    // currentChainId === ChainId.optimism_kovan
-  );
-};
-
-// Overrides for minimum base token remaining after performing an action
-export const minBaseTokenRemainingByNetwork: Record<number, string> = {
-  [ChainId.optimism]: '0.0001',
-  [ChainId.arbitrum_one]: '0.0001',
 };
 
 export const amountToUsd = (
@@ -95,7 +81,6 @@ export const showExternalIncentivesTooltip = (
 
   if (
     superFestRewardsEnabled &&
-    currentMarket === CustomMarket.proto_base_v3 &&
     protocolAction === ProtocolAction.supply &&
     (symbol == 'ETH' || symbol == 'WETH' || symbol == 'wstETH')
   ) {

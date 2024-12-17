@@ -1,4 +1,4 @@
-import { API_ETH_MOCK_ADDRESS } from '@aave/contract-helpers';
+import { constants } from 'ethers';
 
 type ExtensionValue = string | number | boolean | null | undefined;
 
@@ -51,87 +51,23 @@ export interface TokenList {
 
 const NETWORK_ASSETS: TokenInfo[] = [
   {
-    name: 'Ethereum',
-    symbol: 'ETH',
+    name: 'Flow EVM',
+    symbol: 'FLOW',
     decimals: 18,
-    address: API_ETH_MOCK_ADDRESS,
-    chainId: 1,
-    logoURI:
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+    address: constants.AddressZero,
+    chainId: 747, //bnb
+    logoURI: 'https://logotyp.us/file/flow.svg',
     extensions: {
       isNative: true,
     },
   },
   {
-    name: 'Avalanche',
-    symbol: 'AVAX',
+    name: 'Flow EVM Testnet',
+    symbol: 'FLOW',
     decimals: 18,
-    address: API_ETH_MOCK_ADDRESS,
-    chainId: 43114,
-    logoURI:
-      'https://assets.coingecko.com/coins/images/12559/standard/Avalanche_Circle_RedWhite_Trans.png?1696512369',
-    extensions: {
-      isNative: true,
-    },
-  },
-  {
-    name: 'Polygon',
-    symbol: 'POL',
-    decimals: 18,
-    address: API_ETH_MOCK_ADDRESS,
-    chainId: 137,
-    logoURI: 'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912',
-    extensions: {
-      isNative: true,
-    },
-  },
-
-  // NOTE L2 ETH
-  {
-    name: 'Ethereum',
-    symbol: 'ETH',
-    decimals: 18,
-    address: API_ETH_MOCK_ADDRESS,
-    chainId: 8453, // base
-    logoURI:
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
-    extensions: {
-      isNative: true,
-    },
-  },
-  {
-    name: 'Ethereum',
-    symbol: 'ETH',
-    decimals: 18,
-    address: API_ETH_MOCK_ADDRESS,
-    chainId: 10, // optimis
-    // logoURI: 'https://ethereum-optimism.github.io/data/OP/logo.png',
-    logoURI:
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
-    extensions: {
-      isNative: true,
-    },
-  },
-  {
-    name: 'Ethereum',
-    symbol: 'ETH',
-    decimals: 18,
-    address: API_ETH_MOCK_ADDRESS,
-    chainId: 42161, // Arb
-    logoURI:
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
-    extensions: {
-      isNative: true,
-    },
-  },
-  {
-    name: 'Ethereum',
-    symbol: 'ETH',
-    decimals: 18,
-    address: API_ETH_MOCK_ADDRESS,
-    chainId: 56, //bnb
-    logoURI:
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+    address: constants.AddressZero,
+    chainId: 545, //bnb
+    logoURI: 'https://logotyp.us/file/flow.svg',
     extensions: {
       isNative: true,
     },
@@ -139,7 +75,7 @@ const NETWORK_ASSETS: TokenInfo[] = [
 ];
 
 export const TOKEN_LIST: TokenList = {
-  name: 'Aave Labs Default',
+  name: 'More Labs Default',
   timestamp: '2024-01-22T15:47:25.037Z',
   version: {
     major: 11,
