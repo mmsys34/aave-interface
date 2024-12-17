@@ -177,7 +177,7 @@ export const getProvider = (chainId: number): ProviderWithSend => {
 };
 
 export const getENSProvider = () => {
-  const chainId = Number(process.env.NEXT_PUBLIC_DEFAULT_NETWORK || '545');
+  const chainId = Number(process.env.NEXT_PUBLIC_FORK_BASE_CHAIN_ID || '545');
   const config = getNetworkConfig(chainId);
   return new StaticJsonRpcProvider(config.publicJsonRPCUrl[0], chainId);
 };
