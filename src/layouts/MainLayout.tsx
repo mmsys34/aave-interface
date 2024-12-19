@@ -12,9 +12,9 @@ export function MainLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <TopBarNotify
-        notifyText="Users can now stake GHO in the safety module 🎉"
-        learnMoreLink="https://app.aave.com/staking"
-        buttonText="Learn More"
+        notifyText="MORE Markets is now live on Flow Crescendo Mainnet!"
+        learnMoreLink="https://mirror.xyz/0xA85C9020A57179C61d9794353DCaa7d9A6c16ad9/CoMo7eIjiLdMbmXXv4YIadrZwDQNn-zgjtSjokxzmRQ"
+        buttonText="Read the full announcement here"
       />
       <AppHeader />
       <Box component="main" sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
