@@ -448,10 +448,10 @@ export function getThemedComponents(theme: Theme) {
             props: { variant: 'gradient' },
             style: {
               color: theme.palette.common.white,
-              background: theme.palette.gradients.aaveGradient,
+              background: theme.palette.gradients.newGradient,
               transition: 'all 0.2s ease',
               '&:hover, &.Mui-focusVisible': {
-                background: theme.palette.gradients.aaveGradient,
+                background: theme.palette.gradients.newGradient,
                 opacity: '0.9',
               },
             },
@@ -837,10 +837,10 @@ export function getThemedComponents(theme: Theme) {
       MuiLinearProgress: {
         styleOverrides: {
           bar1Indeterminate: {
-            background: theme.palette.gradients.aaveGradient,
+            background: theme.palette.gradients.newGradient,
           },
           bar2Indeterminate: {
-            background: theme.palette.gradients.aaveGradient,
+            background: theme.palette.gradients.newGradient,
           },
         },
       },

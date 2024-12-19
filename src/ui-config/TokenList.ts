@@ -90,7 +90,7 @@ export const TOKEN_LIST: TokenList = {
     ...NETWORK_ASSETS,
     {
       chainId: ChainIds.flowEVMTestnet,
-      address: '0xe132751AB5A14ac0bD3Cb40571a9248Ee7a2a9EA',
+      address: '0x8E3DC6E937B560ce6a1Aaa78AfC775228969D16c',
       name: 'ankr.FLOW',
       symbol: 'ankr.FLOW',
       decimals: 18,
