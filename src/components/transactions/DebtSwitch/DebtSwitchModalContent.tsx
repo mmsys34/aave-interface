@@ -1,3 +1,4 @@
+import { InterestRate } from '@aave/contract-helpers';
 import { valueToBigNumber } from '@aave/math-utils';
 import { MaxUint256 } from '@ethersproject/constants';
 import { ArrowDownIcon } from '@heroicons/react/outline';
@@ -19,7 +20,6 @@ import { useWeb3Context } from 'src/libs/hooks/useWeb3Context';
 import { ListSlippageButton } from 'src/modules/dashboard/lists/SlippageList';
 import { useRootStore } from 'src/store/root';
 import { assetCanBeBorrowedByUser } from 'src/utils/getMaxAmountAvailableToBorrow';
-import { displayGhoForMintableMarket } from 'src/utils/ghoUtilities';
 
 import {
   ComputedUserReserveData,
@@ -62,15 +62,14 @@ export const DebtSwitchModalContent = ({
   poolReserve,
   userReserve,
   isWrongNetwork,
+  currentRateMode,
   user,
-}: ModalWrapperProps & { user: ExtendedFormattedUser }) => {
+}: ModalWrapperProps & { currentRateMode: InterestRate; user: ExtendedFormattedUser }) => {
   const { reserves } = useAppDataContext();
   const currentChainId = useRootStore((store) => store.currentChainId);
   const currentNetworkConfig = useRootStore((store) => store.currentNetworkConfig);
   const { currentAccount } = useWeb3Context();
   const { gasLimit, mainTxState, txError, setTxError } = useModalContext();
-
-  const currentMarket = useRootStore((store) => store.currentMarket);
 
   let switchTargets = reserves
     .filter(
@@ -103,7 +102,10 @@ export const DebtSwitchModalContent = ({
     (r) => r.underlyingAsset === targetReserve.address
   ) as ComputedUserReserveData;
 
-  const maxAmountToSwitch = userReserve.variableBorrows;
+  const maxAmountToSwitch =
+    currentRateMode === InterestRate.Variable
+      ? userReserve.variableBorrows
+      : userReserve.stableBorrows;
 
   const isMaxSelected = _amount === '-1';
   const amount = isMaxSelected ? maxAmountToSwitch : _amount;
@@ -137,17 +139,13 @@ export const DebtSwitchModalContent = ({
   // TODO consider pulling out a util helper here or maybe moving this logic into the store
   let availableBorrowCap = valueToBigNumber(MaxUint256.toString());
   let availableLiquidity: string | number = '0';
-  if (displayGhoForMintableMarket({ symbol: switchTarget.reserve.symbol, currentMarket })) {
-    availableLiquidity = '0';
-  } else {
-    availableBorrowCap =
-      switchTarget.reserve.borrowCap === '0'
-        ? valueToBigNumber(MaxUint256.toString())
-        : valueToBigNumber(Number(switchTarget.reserve.borrowCap)).minus(
-            valueToBigNumber(switchTarget.reserve.totalDebt)
-          );
-    availableLiquidity = switchTarget.reserve.formattedAvailableLiquidity;
-  }
+  availableBorrowCap =
+    switchTarget.reserve.borrowCap === '0'
+      ? valueToBigNumber(MaxUint256.toString())
+      : valueToBigNumber(Number(switchTarget.reserve.borrowCap)).minus(
+          valueToBigNumber(switchTarget.reserve.totalDebt)
+        );
+  availableLiquidity = switchTarget.reserve.formattedAvailableLiquidity;
 
   const availableLiquidityOfTargetReserve = BigNumber.max(
     BigNumber.min(availableLiquidity, availableBorrowCap),
@@ -214,8 +212,6 @@ export const DebtSwitchModalContent = ({
         }
       />
     );
-
-  let ghoTargetData: GhoRange | undefined;
 
   return (
     <>
@@ -310,9 +306,18 @@ export const DebtSwitchModalContent = ({
           fromAmount={amount === '' ? '0' : amount}
           loading={loadingSkeleton}
           sourceBalance={maxAmountToSwitch}
-          sourceBorrowAPY={poolReserve.variableBorrowAPY}
+          sourceBorrowAPY={
+            currentRateMode === InterestRate.Variable
+              ? poolReserve.variableBorrowAPY
+              : poolReserve.stableBorrowAPY
+          }
           targetBorrowAPY={switchTarget.reserve.variableBorrowAPY}
-          ghoData={ghoTargetData}
+          showAPYTypeChange={
+            currentRateMode === InterestRate.Stable ||
+            userReserve.reserve.symbol === 'GHO' ||
+            switchTarget.reserve.symbol === 'GHO'
+          }
+          ghoData={undefined}
         />
       </TxModalDetails>
 
@@ -340,6 +345,7 @@ export const DebtSwitchModalContent = ({
         blocked={blockingError !== undefined || error !== '' || insufficientCollateral}
         loading={routeLoading}
         buildTxFn={buildTxFn}
+        currentRateMode={currentRateMode === InterestRate.Variable ? 2 : 1}
       />
     </>
   );

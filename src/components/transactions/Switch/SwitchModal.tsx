@@ -1,4 +1,3 @@
-import { AaveV3Ethereum } from '@bgd-labs/aave-address-book';
 import { Trans } from '@lingui/macro';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
@@ -17,7 +16,7 @@ import { BasicModal } from '../../primitives/BasicModal';
 import { supportedNetworksWithEnabledMarket } from './common';
 import { SwitchModalContent } from './SwitchModalContent';
 
-const defaultNetwork = marketsData[CustomMarket.proto_mainnet_v3];
+const defaultNetwork = marketsData[CustomMarket.proto_testnet_v3];
 
 interface SwitchModalContentWrapperProps {
   user: string;
@@ -52,11 +51,8 @@ const SwitchModalContentWrapper = ({
       const defaultInputToken =
         baseTokenList.find((token) => token.extensions?.isNative) || baseTokenList[0];
       const defaultOutputToken =
-        baseTokenList.find(
-          (token) =>
-            (token.address === AaveV3Ethereum.ASSETS.GHO.UNDERLYING || token.symbol == 'AAVE') &&
-            token.address !== defaultInputToken.address
-        ) || baseTokenList.find((token) => token.address !== defaultInputToken.address);
+        baseTokenList.find((token) => token.address !== defaultInputToken.address) ||
+        baseTokenList.find((token) => token.address !== defaultInputToken.address);
       invariant(
         defaultInputToken && defaultOutputToken,
         'token list should have at least 2 assets'

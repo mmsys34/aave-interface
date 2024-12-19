@@ -1,8 +1,5 @@
 import { Trans } from '@lingui/macro';
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import CloseIcon from '@mui/icons-material/Close';
 import { Box, SvgIcon, Typography } from '@mui/material';
-import { Fragment } from 'react';
 import { LiquidationPenaltyTooltip } from 'src/components/infoTooltips/LiquidationPenaltyTooltip';
 import { LiquidationThresholdTooltip } from 'src/components/infoTooltips/LiquidationThresholdTooltip';
 import { MaxLTVTooltip } from 'src/components/infoTooltips/MaxLTVTooltip';
@@ -29,68 +26,64 @@ export const ReserveEModePanel: React.FC<ReserverEModePanelProps> = ({ reserve }
     <PanelRow>
       <PanelTitle>E-Mode info</PanelTitle>
       <Box sx={{ flexGrow: 1, minWidth: 0, maxWidth: '100%', width: '100%' }}>
-        {reserve.eModes.map((e) => (
-          <Fragment key={e.id}>
-            <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-              <SvgIcon sx={{ fontSize: '14px', mr: 0.5, ml: 2 }}>
-                <LightningBoltGradient />
-              </SvgIcon>
-              <Typography variant="subheader1">{getEmodeMessage(e.eMode.label)}</Typography>
-              <ConfigStatus enabled={e.collateralEnabled} label="Collateral" />
-              <ConfigStatus enabled={e.borrowingEnabled} label="Borrowable" />
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                pt: '12px',
-              }}
-            >
-              <ReserveOverviewBox
-                title={<MaxLTVTooltip variant="description" text={<Trans>Max LTV</Trans>} />}
-              >
-                <FormattedNumber
-                  value={e.eMode.formattedLtv}
-                  percent
-                  variant="secondary14"
-                  visibleDecimals={2}
-                />
-              </ReserveOverviewBox>
-              <ReserveOverviewBox
-                title={
-                  <LiquidationThresholdTooltip
-                    variant="description"
-                    text={<Trans>Liquidation threshold</Trans>}
-                  />
-                }
-              >
-                <FormattedNumber
-                  value={e.eMode.formattedLiquidationThreshold}
-                  percent
-                  variant="secondary14"
-                  visibleDecimals={2}
-                />
-              </ReserveOverviewBox>
-              <ReserveOverviewBox
-                title={
-                  <LiquidationPenaltyTooltip
-                    variant="description"
-                    text={<Trans>Liquidation penalty</Trans>}
-                  />
-                }
-              >
-                <FormattedNumber
-                  value={e.eMode.formattedLiquidationBonus}
-                  percent
-                  variant="secondary14"
-                  visibleDecimals={2}
-                />
-              </ReserveOverviewBox>
-            </Box>
-          </Fragment>
-        ))}
-
+        <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+          <Typography variant="secondary14" color="text.secondary">
+            <Trans>E-Mode Category</Trans>
+          </Typography>
+          <SvgIcon sx={{ fontSize: '14px', mr: 0.5, ml: 2 }}>
+            <LightningBoltGradient />
+          </SvgIcon>
+          <Typography variant="subheader1">{getEmodeMessage(reserve.eModeLabel)}</Typography>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            pt: '12px',
+          }}
+        >
+          <ReserveOverviewBox
+            title={<MaxLTVTooltip variant="description" text={<Trans>Max LTV</Trans>} />}
+          >
+            <FormattedNumber
+              value={reserve.formattedEModeLtv}
+              percent
+              variant="secondary14"
+              visibleDecimals={2}
+            />
+          </ReserveOverviewBox>
+          <ReserveOverviewBox
+            title={
+              <LiquidationThresholdTooltip
+                variant="description"
+                text={<Trans>Liquidation threshold</Trans>}
+              />
+            }
+          >
+            <FormattedNumber
+              value={reserve.formattedEModeLiquidationThreshold}
+              percent
+              variant="secondary14"
+              visibleDecimals={2}
+            />
+          </ReserveOverviewBox>
+          <ReserveOverviewBox
+            title={
+              <LiquidationPenaltyTooltip
+                variant="description"
+                text={<Trans>Liquidation penalty</Trans>}
+              />
+            }
+          >
+            <FormattedNumber
+              value={reserve.formattedEModeLiquidationBonus}
+              percent
+              variant="secondary14"
+              visibleDecimals={2}
+            />
+          </ReserveOverviewBox>
+        </Box>
         <Typography variant="caption" color="text.secondary" paddingTop="24px">
           <Trans>
             E-Mode increases your LTV for a selected category of assets, meaning that when E-mode is
@@ -107,9 +100,9 @@ export const ReserveEModePanel: React.FC<ReserverEModePanelProps> = ({ reserve }
             >
               Dashboard
             </Link>
-            . To learn more about E-Mode and applied restrictionn, see the{' '}
+            . To learn more about E-Mode and applied restrictions in{' '}
             <Link
-              href="https://aave.com/help/borrowing/e-mode"
+              href="https://docs.aave.com/faq/aave-v3-features#high-efficiency-mode-e-mode"
               sx={{ textDecoration: 'underline' }}
               variant="caption"
               color="text.secondary"
@@ -117,9 +110,9 @@ export const ReserveEModePanel: React.FC<ReserverEModePanelProps> = ({ reserve }
                 trackEvent(GENERAL.EXTERNAL_LINK, { Link: 'E-mode FAQ' });
               }}
             >
-              help guide
+              FAQ
             </Link>{' '}
-            or the{' '}
+            or{' '}
             <Link
               href="https://github.com/aave/aave-v3-core/blob/master/techpaper/Aave_V3_Technical_Paper.pdf"
               sx={{ textDecoration: 'underline' }}
@@ -136,20 +129,5 @@ export const ReserveEModePanel: React.FC<ReserverEModePanelProps> = ({ reserve }
         </Typography>
       </Box>
     </PanelRow>
-  );
-};
-
-const ConfigStatus = ({ enabled, label }: { enabled: boolean; label: string }) => {
-  return (
-    <>
-      {enabled ? (
-        <CheckRoundedIcon fontSize="small" color="success" sx={{ ml: 2 }} />
-      ) : (
-        <CloseIcon fontSize="small" color="error" sx={{ ml: 2 }} />
-      )}
-      <Typography variant="subheader1" sx={{ color: enabled ? '#46BC4B' : '#F24E4E' }}>
-        <Trans>{label}</Trans>
-      </Typography>
-    </>
   );
 };

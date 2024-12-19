@@ -1,5 +1,4 @@
 import { normalize } from '@aave/math-utils';
-import { AaveV3Ethereum } from '@bgd-labs/aave-address-book';
 import { useRootStore } from 'src/store/root';
 import { CustomMarket } from 'src/ui-config/marketsConfig';
 import { amountToUsd } from 'src/utils/utils';
@@ -27,13 +26,7 @@ const wrappedTokenConfig: {
     tokenWrapperContractAddress: string;
   }>;
 } = {
-  [CustomMarket.proto_mainnet_v3]: [
-    {
-      tokenIn: AaveV3Ethereum.ASSETS.DAI.UNDERLYING.toLowerCase(),
-      tokenOut: AaveV3Ethereum.ASSETS.sDAI.UNDERLYING.toLowerCase(),
-      tokenWrapperContractAddress: AaveV3Ethereum.SAVINGS_DAI_TOKEN_WRAPPER,
-    },
-  ],
+  [CustomMarket.proto_testnet_v3]: [],
 };
 
 export const useWrappedTokens = () => {

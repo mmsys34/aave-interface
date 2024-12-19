@@ -16,11 +16,10 @@ import { useCollateralSwap } from 'src/hooks/paraswap/useCollateralSwap';
 import { getDebtCeilingData } from 'src/hooks/useAssetCaps';
 import { useModalContext } from 'src/hooks/useModal';
 import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
-import { useZeroLTVBlockingWithdraw } from 'src/hooks/useZeroLTVBlockingWithdraw';
 import { useWeb3Context } from 'src/libs/hooks/useWeb3Context';
 import { ListSlippageButton } from 'src/modules/dashboard/lists/SlippageList';
 import { remainingCap } from 'src/utils/getMaxAmountAvailableToSupply';
-import { displayGhoForMintableMarket } from 'src/utils/ghoUtilities';
+import { displayGho } from 'src/utils/ghoUtilities';
 import { calculateHFAfterSwap } from 'src/utils/hfUtils';
 import { amountToUsd } from 'src/utils/utils';
 
@@ -31,7 +30,7 @@ import {
 } from '../../../hooks/app-data-provider/useAppDataProvider';
 import { ModalWrapperProps } from '../FlowCommons/ModalWrapper';
 import { TxSuccessView } from '../FlowCommons/Success';
-import { ErrorType, getAssetCollateralType, useFlashloan } from '../utils';
+import { ErrorType, getAssetCollateralType, useFlashloan, zeroLTVBlockingWithdraw } from '../utils';
 import { ParaswapErrorDisplay } from '../Warnings/ParaswapErrorDisplay';
 import { SwapActions } from './SwapActions';
 import { SwapModalDetails } from './SwapModalDetails';
@@ -52,7 +51,7 @@ export const SwapModalContent = ({
   const { gasLimit, mainTxState: supplyTxState, txError } = useModalContext();
 
   const swapTargets = reserves
-    .filter((r) => !displayGhoForMintableMarket({ symbol: r.symbol, currentMarket }))
+    .filter((r) => !displayGho({ symbol: r.symbol, currentMarket }))
     .filter((r) => r.underlyingAsset !== poolReserve.underlyingAsset && !r.isFrozen)
     .map((reserve) => ({
       address: reserve.underlyingAsset,
@@ -129,7 +128,7 @@ export const SwapModalContent = ({
     marketReferencePriceInUsd
   );
 
-  const assetsBlockingWithdraw = useZeroLTVBlockingWithdraw();
+  const assetsBlockingWithdraw: string[] = zeroLTVBlockingWithdraw(user);
 
   let blockingError: ErrorType | undefined = undefined;
   if (assetsBlockingWithdraw.length > 0 && !assetsBlockingWithdraw.includes(poolReserve.symbol)) {
@@ -147,8 +146,8 @@ export const SwapModalContent = ({
       case ErrorType.ZERO_LTV_WITHDRAW_BLOCKED:
         return (
           <Trans>
-            Assets with zero LTV ({assetsBlockingWithdraw.join(', ')}) must be withdrawn or disabled
-            as collateral to perform this action
+            Assets with zero LTV ({assetsBlockingWithdraw}) must be withdrawn or disabled as
+            collateral to perform this action
           </Trans>
         );
       case ErrorType.FLASH_LOAN_NOT_AVAILABLE:

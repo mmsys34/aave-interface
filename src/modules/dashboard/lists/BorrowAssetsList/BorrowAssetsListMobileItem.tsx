@@ -1,11 +1,8 @@
-import { ProtocolAction } from '@aave/contract-helpers';
 import { Trans } from '@lingui/macro';
 import { Box, Button } from '@mui/material';
-import { MeritIncentivesButton } from 'src/components/incentives/IncentivesButton';
 import { VariableAPYTooltip } from 'src/components/infoTooltips/VariableAPYTooltip';
 import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
 import { DashboardReserve } from 'src/utils/dashboardSortUtils';
-import { showExternalIncentivesTooltip } from 'src/utils/utils';
 
 import { CapsHint } from '../../../../components/caps/CapsHint';
 import { CapType } from '../../../../components/caps/helper';
@@ -41,11 +38,6 @@ export const BorrowAssetsListMobileItem = ({
       name={name}
       underlyingAsset={underlyingAsset}
       currentMarket={currentMarket}
-      showExternalIncentivesTooltips={showExternalIncentivesTooltip(
-        symbol,
-        currentMarket,
-        ProtocolAction.borrow
-      )}
     >
       <ListValueRow
         title={<Trans>Available to borrow</Trans>}
@@ -73,20 +65,32 @@ export const BorrowAssetsListMobileItem = ({
         captionVariant="description"
         mb={2}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <IncentivesCard
-            value={Number(variableBorrowRate)}
-            incentives={vIncentivesData}
-            symbol={symbol}
-            variant="secondary14"
-          />
-          <MeritIncentivesButton
-            symbol={symbol}
-            market={currentMarket}
-            protocolAction={ProtocolAction.borrow}
-          />
-        </Box>
+        <IncentivesCard
+          value={Number(variableBorrowRate)}
+          incentives={vIncentivesData}
+          symbol={symbol}
+          variant="secondary14"
+        />
       </Row>
+      {/* <Row
+        caption={
+          <StableAPYTooltip
+            text={<Trans>APY, stable</Trans>}
+            key="APY_dash_mob_stable_ type"
+            variant="description"
+          />
+        }
+        align="flex-start"
+        captionVariant="description"
+        mb={2}
+      >
+        <IncentivesCard
+          value={Number(stableBorrowRate)}
+          incentives={sIncentivesData}
+          symbol={symbol}
+          variant="secondary14"
+        />
+      </Row> */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 5 }}>
         <Button
           disabled={disableBorrow}

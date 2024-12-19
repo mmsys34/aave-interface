@@ -6,7 +6,7 @@ import {
 import BigNumber from 'bignumber.js';
 import memoize from 'micro-memoize';
 import { MarketDataType } from 'src/ui-config/marketsConfig';
-import { displayGhoForMintableMarket, weightedAverageAPY } from 'src/utils/ghoUtilities';
+import { displayGho, weightedAverageAPY } from 'src/utils/ghoUtilities';
 
 import {
   FormattedReservesAndIncentives,
@@ -51,10 +51,7 @@ const formatUserYield = memoize(
           if (value.variableBorrowsUSD !== '0') {
             // TODO: Export to unified helper function
             if (
-              displayGhoForMintableMarket({
-                symbol: reserve.symbol,
-                currentMarket: currentMarket,
-              }) &&
+              displayGho({ symbol: reserve.symbol, currentMarket: currentMarket }) &&
               formattedGhoUserData &&
               formattedGhoReserveData
             ) {
@@ -89,6 +86,18 @@ const formatUserYield = memoize(
                   );
                 });
               }
+            }
+          }
+          if (value.stableBorrowsUSD !== '0') {
+            acc.negativeProportion = acc.negativeProportion.plus(
+              new BigNumber(value.stableBorrowAPY).multipliedBy(value.stableBorrowsUSD)
+            );
+            if (reserve.sIncentivesData) {
+              reserve.sIncentivesData.forEach((incentive) => {
+                acc.positiveProportion = acc.positiveProportion.plus(
+                  new BigNumber(incentive.incentiveAPR).multipliedBy(value.stableBorrowsUSD)
+                );
+              });
             }
           }
         } else {

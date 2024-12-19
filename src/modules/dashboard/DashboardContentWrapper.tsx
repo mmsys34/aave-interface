@@ -28,6 +28,8 @@ export const DashboardContentWrapper = ({ isBorrow }: DashboardContentWrapperPro
 
   const downToLg = useMediaQuery(breakpoints.down('lg'));
 
+  const upFromSm = useMediaQuery(breakpoints.up('xsm'));
+
   return (
     <Box>
       {currentMarketData.chainId === ChainId.polygon && !currentMarketData.v3}
@@ -51,7 +53,7 @@ export const DashboardContentWrapper = ({ isBorrow }: DashboardContentWrapperPro
               <Button
                 sx={{
                   position: 'absolute',
-                  top: '-130px',
+                  top: upFromSm ? '-60px' : '-90px',
                   right: '0px',
                 }}
                 onClick={() => {
@@ -84,7 +86,7 @@ export const DashboardContentWrapper = ({ isBorrow }: DashboardContentWrapperPro
               sx={{
                 position: 'absolute',
 
-                top: downToLg ? '-130px' : '-90px',
+                top: upFromSm ? '-60px' : '-90px',
 
                 right: '0px',
               }}

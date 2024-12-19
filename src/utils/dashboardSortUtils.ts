@@ -57,8 +57,10 @@ const handleSortDesc = (
     return positions.sort((a, b) => Number(a[sortName]) - Number(b[sortName]));
   } else {
     if (isBorrowedPosition) {
-      positions.sort(
-        (a, b) => Number(b.reserve.variableBorrowAPY) - Number(a.reserve.variableBorrowAPY)
+      positions.sort((a, b) =>
+        a.borrowRateMode === 'Variable'
+          ? Number(b.reserve.variableBorrowAPY) - Number(a.reserve.variableBorrowAPY)
+          : Number(b.reserve.stableBorrowAPY) - Number(a.reserve.stableBorrowAPY)
       );
     }
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -83,8 +85,10 @@ const sortAsc = (
   } else {
     // Note because borrow positions have extra logic we need to have this
     if (isBorrowedPosition) {
-      positions.sort(
-        (a, b) => Number(a.reserve.variableBorrowAPY) - Number(b.reserve.variableBorrowAPY)
+      positions.sort((a, b) =>
+        a.borrowRateMode === 'Variable'
+          ? Number(a.reserve.variableBorrowAPY) - Number(b.reserve.variableBorrowAPY)
+          : Number(a.reserve.stableBorrowAPY) - Number(b.reserve.stableBorrowAPY)
       );
     }
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

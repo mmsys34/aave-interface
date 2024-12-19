@@ -1,6 +1,6 @@
-import { ChainIdToNetwork } from '@aave/contract-helpers';
+import { ChainId, ChainIdToNetwork } from '@aave/contract-helpers';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { providers as etherProviders } from 'ethers';
+import { providers as ethProviers } from 'ethers';
 
 import {
   CustomMarket,
@@ -15,6 +15,7 @@ import {
   networkConfigs as _networkConfigs,
 } from '../ui-config/networksConfig';
 import { RotationProvider } from './rotationProvider';
+import { ChainIds } from './const';
 
 export type Pool = {
   address: string;
@@ -46,7 +47,7 @@ const FORK_WS_RPC_URL =
   global?.window?.localStorage.getItem('forkWsRPCUrl') ||
   'ws://127.0.0.1:8545';
 
-export interface ProviderWithSend extends etherProviders.Provider {
+export interface ProviderWithSend extends ethProviers.Provider {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   send<P = any, R = any>(method: string, params: Array<P>): Promise<R>;
 }
@@ -97,7 +98,7 @@ export function getDefaultChainId() {
 }
 
 export function getSupportedChainIds(): number[] {
-  return [545, 747];
+  return [ChainIds.flowEVMTestnet, ChainIds.flowEVMMainnet];
 }
 
 /**
@@ -154,7 +155,7 @@ const providers: { [network: string]: ProviderWithSend } = {};
  * @param chainId
  * @returns provider or fallbackprovider in case multiple rpcs are configured
  */
-export const getProvider = (chainId: number): ProviderWithSend => {
+export const getProvider = (chainId: ChainId): ProviderWithSend => {
   if (!providers[chainId]) {
     const config = getNetworkConfig(chainId);
     const chainProviders: string[] = [];
@@ -177,10 +178,12 @@ export const getProvider = (chainId: number): ProviderWithSend => {
 };
 
 export const getENSProvider = () => {
-  const chainId = Number(process.env.NEXT_PUBLIC_FORK_BASE_CHAIN_ID || '545');
+  const chainId = Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || '1');
   const config = getNetworkConfig(chainId);
   return new StaticJsonRpcProvider(config.publicJsonRPCUrl[0], chainId);
 };
+
+export const frozenProposalMap: Record<string, string> = {};
 
 // reexport so we can forbit config import
 export { CustomMarket };

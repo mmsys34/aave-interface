@@ -1,12 +1,17 @@
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { Trans } from '@lingui/macro';
 import { Box, Button, Divider, SvgIcon } from '@mui/material';
+import { getFrozenProposalLink } from 'src/components/infoTooltips/FrozenTooltip';
 import { PausedTooltipText } from 'src/components/infoTooltips/PausedTooltip';
 import { FormattedNumber } from 'src/components/primitives/FormattedNumber';
 import { Link } from 'src/components/primitives/Link';
 import { Warning } from 'src/components/primitives/Warning';
 import { AMPLWarning } from 'src/components/Warnings/AMPLWarning';
 import { BorrowDisabledWarning } from 'src/components/Warnings/BorrowDisabledWarning';
+import {
+  AssetsBeingOffboarded,
+  OffboardingWarning,
+} from 'src/components/Warnings/OffboardingWarning';
 import { ComputedReserveData } from 'src/hooks/app-data-provider/useAppDataProvider';
 import { useAssetCaps } from 'src/hooks/useAssetCaps';
 import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
@@ -37,12 +42,26 @@ export const ReserveConfiguration: React.FC<ReserveConfigurationProps> = ({ rese
   const showBorrowCapStatus: boolean = reserve.borrowCap !== '0';
   const trackEvent = useRootStore((store) => store.trackEvent);
 
+  const offboardingDiscussion = AssetsBeingOffboarded[currentMarket]?.[reserve.symbol];
+
   return (
     <>
       <Box>
-        {reserve.isFrozen ? (
+        {reserve.isFrozen && !offboardingDiscussion ? (
           <Warning sx={{ mt: '16px', mb: '40px' }} severity="error">
-            <Trans>This asset is frozen due to an More community decision. </Trans>
+            <Trans>
+              This asset is frozen due to an Aave community decision.{' '}
+              <Link
+                href={getFrozenProposalLink(reserve.symbol, currentMarket)}
+                sx={{ textDecoration: 'underline' }}
+              >
+                <Trans>More details</Trans>
+              </Link>
+            </Trans>
+          </Warning>
+        ) : offboardingDiscussion ? (
+          <Warning sx={{ mt: '16px', mb: '40px' }} severity="error">
+            <OffboardingWarning discussionLink={offboardingDiscussion} />
           </Warning>
         ) : (
           reserve.symbol == 'AMPL' && (
@@ -112,7 +131,7 @@ export const ReserveConfiguration: React.FC<ReserveConfigurationProps> = ({ rese
         </>
       )}
 
-      {reserve.eModes.length > 0 && (
+      {reserve.eModeCategoryId !== 0 && (
         <>
           <Divider sx={{ my: { xs: 6, sm: 10 } }} />
           <ReserveEModePanel reserve={reserve} />

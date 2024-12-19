@@ -1,6 +1,6 @@
 import { ChainId } from '@aave/contract-helpers';
 import { Trans } from '@lingui/macro';
-import { AlertProps, Button, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { useWeb3Context } from 'src/libs/hooks/useWeb3Context';
 import { TrackEventProps } from 'src/store/analyticsSlice';
 import { useRootStore } from 'src/store/root';
@@ -8,7 +8,7 @@ import { GENERAL } from 'src/utils/mixPanelEvents';
 
 import { Warning } from '../../primitives/Warning';
 
-export type ChangeNetworkWarningProps = AlertProps & {
+export type ChangeNetworkWarningProps = {
   funnel?: string;
   networkName: string;
   chainId: ChainId;
@@ -20,7 +20,6 @@ export const ChangeNetworkWarning = ({
   chainId,
   event,
   funnel,
-  ...rest
 }: ChangeNetworkWarningProps) => {
   const { switchNetwork, switchNetworkError } = useWeb3Context();
   const trackEvent = useRootStore((store) => store.trackEvent);
@@ -30,7 +29,7 @@ export const ChangeNetworkWarning = ({
     switchNetwork(chainId);
   };
   return (
-    <Warning severity="error" icon={false} {...rest}>
+    <Warning severity="error" icon={false}>
       {switchNetworkError ? (
         <Typography>
           <Trans>

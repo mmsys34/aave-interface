@@ -15,10 +15,9 @@ export const calculateMaxWithdrawAmount = (
   const unborrowedLiquidity = valueToBigNumber(poolReserve.unborrowedLiquidity);
   let maxAmountToWithdraw = BigNumber.min(underlyingBalance, unborrowedLiquidity);
   let maxCollateralToWithdrawInETH = valueToBigNumber('0');
-  const userEMode = poolReserve.eModes.find((elem) => elem.id === user.userEmodeCategoryId);
   const reserveLiquidationThreshold =
-    user.isInEmode && userEMode
-      ? userEMode.eMode.formattedLiquidationThreshold
+    user.isInEmode && user.userEmodeCategoryId === poolReserve.eModeCategoryId
+      ? poolReserve.formattedEModeLiquidationThreshold
       : poolReserve.formattedReserveLiquidationThreshold;
   if (
     userReserve?.usageAsCollateralEnabledOnUser &&

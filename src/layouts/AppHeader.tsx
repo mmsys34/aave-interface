@@ -83,9 +83,8 @@ export function AppHeader() {
   const { breakpoints } = useTheme();
   const md = useMediaQuery(breakpoints.down('md'));
   const sm = useMediaQuery(breakpoints.down('sm'));
-  const smd = useMediaQuery('(max-width:1120px)');
 
-  const [, setVisitedSwitch] = useState(() => {
+  const [visitedSwitch, setVisitedSwitch] = useState(() => {
     if (typeof window === 'undefined') return true;
     return Boolean(localStorage.getItem(SWITCH_VISITED_KEY));
   });
@@ -153,7 +152,7 @@ export function AppHeader() {
       <Typography variant="description">
         <Trans>The app is running in testnet mode. Learn how it works in</Trans>{' '}
         <Link
-          href="https://aave.com/faq"
+          href="https://docs.aave.com/faq/testing-aave"
           style={{ fontSize: '14px', fontWeight: 400, textDecoration: 'underline' }}
         >
           FAQ.
@@ -214,7 +213,7 @@ export function AppHeader() {
           }}
           onClick={() => setMobileMenuOpen(false)}
         >
-          <img src={uiConfig.appLogo} alt="AAVE" width={40} height={30} />
+          <img src={uiConfig.appLogo} alt="AAVE" width={150} height={30} />
         </Box>
         <Box sx={{ mr: sm ? 1 : 3 }}>
           {ENABLE_TESTNET && (
@@ -262,10 +261,9 @@ export function AppHeader() {
         </Box>
 
         <Box sx={{ flexGrow: 1 }} />
-
         <NoSsr>
           <StyledBadge
-            invisible={true}
+            invisible={visitedSwitch}
             variant="dot"
             badgeContent=""
             color="secondary"
@@ -277,7 +275,7 @@ export function AppHeader() {
               sx={{ p: '7px 8px', minWidth: 'unset', gap: 2, alignItems: 'center' }}
               aria-label="Switch tool"
             >
-              {!smd && (
+              {!md && (
                 <Typography component="span" typography="subheader1">
                   Switch tokens
                 </Typography>

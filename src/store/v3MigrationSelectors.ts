@@ -72,6 +72,7 @@ export const selectMigrationSelectedBorrowIndex = (
 };
 
 export type MigrationUserReserve = FormattedUserReserves & {
+  increasedStableBorrows: string;
   increasedVariableBorrows: string;
   interestRate: InterestRate;
   debtKey: string;
@@ -83,10 +84,12 @@ export type MigrationUserReserve = FormattedUserReserves & {
 };
 
 export type V3Rates = {
+  stableBorrowAPY: string;
   variableBorrowAPY: string;
   supplyAPY: string;
   aIncentivesData?: ReserveIncentiveResponse[];
   vIncentivesData?: ReserveIncentiveResponse[];
+  sIncentivesData?: ReserveIncentiveResponse[];
   priceInUSD: string;
   ltv?: string;
   liquidationThreshold?: string;
@@ -96,6 +99,7 @@ type ReserveDebtApprovalPayload = {
   [underlyingAsset: string]: {
     variableDebtTokenAddress: string;
     decimals: number;
+    stableDebtAmount: string;
     variableDebtAmount: string;
   };
 };
@@ -103,10 +107,20 @@ type ReserveDebtApprovalPayload = {
 export const selectSplittedBorrowsForMigration = (userReserves: FormattedUserReserves[]) => {
   const splittedUserReserves: MigrationUserReserve[] = [];
   userReserves.forEach((userReserve) => {
+    if (userReserve.stableBorrows !== '0') {
+      splittedUserReserves.push({
+        ...userReserve,
+        interestRate: InterestRate.Stable,
+        increasedStableBorrows: userReserve.stableBorrows,
+        increasedVariableBorrows: '0',
+        debtKey: userReserve.reserve.stableDebtTokenAddress,
+      });
+    }
     if (userReserve.variableBorrows !== '0') {
       splittedUserReserves.push({
         ...userReserve,
         interestRate: InterestRate.Variable,
+        increasedStableBorrows: '0',
         increasedVariableBorrows: userReserve.variableBorrows,
         debtKey: userReserve.reserve.variableDebtTokenAddress,
       });
@@ -313,7 +327,11 @@ export const selectMigrationRepayAssets = (
     store.selectedMigrationBorrowAssets
   ).map((userReserve) => ({
     underlyingAsset: userReserve.underlyingAsset,
-    amount: userReserve.increasedVariableBorrows,
+    amount:
+      // TODO: verify which digits
+      userReserve.interestRate == InterestRate.Stable
+        ? userReserve.increasedStableBorrows
+        : userReserve.increasedVariableBorrows,
     deadline,
     debtToken: userReserve.debtKey,
     rateMode: userReserve.interestRate,
@@ -394,7 +412,11 @@ export const selectSelectedBorrowReservesForMigrationV3 = (
       );
 
       if (borrowReserveV3) {
-        debtKey = borrowReserveV3.reserve.variableDebtTokenAddress;
+        if (borrowReserve.interestRate == InterestRate.Variable) {
+          debtKey = borrowReserveV3.reserve.variableDebtTokenAddress;
+        } else {
+          debtKey = borrowReserveV3.reserve.stableDebtTokenAddress;
+        }
       }
 
       return {
@@ -471,20 +493,27 @@ export const selectMigrationBorrowPermitPayloads = (
         reserveDebts[userReserve.underlyingAsset] = {
           variableDebtTokenAddress: borrowReserveV3.reserve.variableDebtTokenAddress,
           decimals: borrowReserveV3.reserve.decimals,
+          stableDebtAmount: '0',
           variableDebtAmount: '0',
         };
       }
 
       const debt = reserveDebts[userReserve.underlyingAsset];
 
-      debt.variableDebtAmount = valueToBigNumber(debt.variableDebtAmount)
-        .plus(valueToBigNumber(userReserve.increasedVariableBorrows))
-        .toString();
+      if (userReserve.interestRate === InterestRate.Stable) {
+        debt.stableDebtAmount = valueToBigNumber(debt.stableDebtAmount)
+          .plus(valueToBigNumber(userReserve.increasedStableBorrows))
+          .toString();
+      } else if (userReserve.interestRate === InterestRate.Variable) {
+        debt.variableDebtAmount = valueToBigNumber(debt.variableDebtAmount)
+          .plus(valueToBigNumber(userReserve.increasedVariableBorrows))
+          .toString();
+      }
     });
 
   return Object.keys(reserveDebts).map<Approval>((key) => {
     const debt = reserveDebts[key];
-    const totalDebt = valueToBigNumber(debt.variableDebtAmount);
+    const totalDebt = valueToBigNumber(debt.stableDebtAmount).plus(debt.variableDebtAmount);
     const combinedAmountInWei = valueToWei(totalDebt.toString(), debt.decimals);
     let bufferedAmount = combinedAmountInWei;
     if (buffer) {

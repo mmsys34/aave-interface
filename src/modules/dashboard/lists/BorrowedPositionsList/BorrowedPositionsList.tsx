@@ -11,6 +11,7 @@ import { fetchIconSymbolAndName } from 'src/ui-config/reservePatches';
 import { GHO_SYMBOL } from 'src/utils/ghoUtilities';
 import { GENERAL } from 'src/utils/mixPanelEvents';
 
+import { APYTypeTooltip } from '../../../../components/infoTooltips/APYTypeTooltip';
 import { BorrowPowerTooltip } from '../../../../components/infoTooltips/BorrowPowerTooltip';
 import { TotalBorrowAPYTooltip } from '../../../../components/infoTooltips/TotalBorrowAPYTooltip';
 import { ListWrapper } from '../../../../components/lists/ListWrapper';
@@ -43,10 +44,24 @@ const head = [
     title: <Trans key="APY">APY</Trans>,
     sortKey: 'borrowAPY',
   },
+  {
+    title: (
+      <APYTypeTooltip
+        event={{
+          eventName: GENERAL.TOOL_TIP,
+          eventParams: { tooltip: 'APY Type Borrow' },
+        }}
+        text={<Trans>APY type</Trans>}
+        key="APY type"
+        variant="subheader2"
+      />
+    ),
+    sortKey: 'typeAPY',
+  },
 ];
 
 export const BorrowedPositionsList = () => {
-  const { user, loading, eModes, reserves } = useAppDataContext();
+  const { user, loading, eModes } = useAppDataContext();
   const { currentMarketData, currentNetworkConfig } = useProtocolDataContext();
   const [sortName, setSortName] = useState('');
   const [sortDesc, setSortDesc] = useState(false);
@@ -55,15 +70,27 @@ export const BorrowedPositionsList = () => {
   const showEModeButton = currentMarketData.v3 && Object.keys(eModes).length > 1;
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
-  if (loading || !user)
-    return <ListLoader title={<Trans>Your borrows</Trans>} head={head.map((c) => c.title)} />;
-
   let borrowPositions =
     user?.userReservesData.reduce((acc, userReserve) => {
       if (userReserve.variableBorrows !== '0') {
         acc.push({
           ...userReserve,
           borrowRateMode: InterestRate.Variable,
+          reserve: {
+            ...userReserve.reserve,
+            ...(userReserve.reserve.isWrappedBaseAsset
+              ? fetchIconSymbolAndName({
+                  symbol: currentNetworkConfig.baseAssetSymbol,
+                  underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
+                })
+              : {}),
+          },
+        });
+      }
+      if (userReserve.stableBorrows !== '0') {
+        acc.push({
+          ...userReserve,
+          borrowRateMode: InterestRate.Stable,
           reserve: {
             ...userReserve.reserve,
             ...(userReserve.reserve.isWrappedBaseAsset
@@ -104,12 +131,6 @@ export const BorrowedPositionsList = () => {
     true
   );
 
-  const disableEModeSwitch =
-    user.isInEmode &&
-    reserves.filter((reserve) =>
-      reserve.eModes.find((e) => e.id === user.userEmodeCategoryId && e.borrowingEnabled)
-    ).length < 2;
-
   const RenderHeader: React.FC = () => {
     return (
       <ListHeaderWrapper>
@@ -135,6 +156,9 @@ export const BorrowedPositionsList = () => {
       </ListHeaderWrapper>
     );
   };
+
+  if (loading)
+    return <ListLoader title={<Trans>Your borrows</Trans>} head={head.map((c) => c.title)} />;
 
   return (
     <ListWrapper
@@ -196,7 +220,6 @@ export const BorrowedPositionsList = () => {
             <BorrowedPositionsListItemWrapper
               item={item}
               key={item.underlyingAsset + item.borrowRateMode}
-              disableEModeSwitch={disableEModeSwitch}
             />
           ))}
         </>

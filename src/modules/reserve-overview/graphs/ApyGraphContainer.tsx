@@ -7,11 +7,11 @@ import { ReserveRateTimeRange, useReserveRatesHistory } from 'src/hooks/useReser
 import { MarketDataType } from 'src/utils/marketsAndNetworksConfig';
 
 import { ESupportedTimeRanges } from '../TimeRangeSelector';
-import { ApyGraph, PlaceholderChart } from './ApyGraph';
+import { ApyGraph } from './ApyGraph';
 import { GraphLegend } from './GraphLegend';
 import { GraphTimeRangeSelector } from './GraphTimeRangeSelector';
 
-type Field = 'liquidityRate' | 'variableBorrowRate';
+type Field = 'liquidityRate' | 'stableBorrowRate' | 'variableBorrowRate';
 
 type Fields = { name: Field; color: string; text: string }[];
 
@@ -40,7 +40,7 @@ export const ApyGraphContainer = ({
   );
 
   const CHART_HEIGHT = 155;
-  const CHART_HEIGHT_LOADING_FIX = 3;
+  const CHART_HEIGHT_LOADING_FIX = 3.5;
   let reserveAddress = '';
   if (reserve) {
     if (currentMarketData.v3) {
@@ -59,6 +59,15 @@ export const ApyGraphContainer = ({
 
   // Borrow fields
   const borrowFields: Fields = [
+    ...(reserve.stableBorrowRateEnabled
+      ? ([
+          {
+            name: 'stableBorrowRate',
+            color: '#E7C6DF',
+            text: 'Borrow APR, stable',
+          },
+        ] as const)
+      : []),
     {
       name: 'variableBorrowRate',
       color: '#B6509E',
@@ -128,23 +137,18 @@ export const ApyGraphContainer = ({
       </Box>
       {loading && graphLoading}
       {error && graphError}
-      {!loading && !error && (
+      {!loading && !error && data.length > 0 && (
         <ParentSize>
-          {({ width }) =>
-            data.length > 0 ? (
-              <ApyGraph
-                width={width}
-                height={CHART_HEIGHT}
-                data={data}
-                fields={fields}
-                selectedTimeRange={selectedTimeRange}
-                avgFieldName={graphKey === 'supply' ? 'liquidityRate' : 'variableBorrowRate'}
-              />
-            ) : (
-              /* Placeholder chart in the case where there is no rate data available yet */
-              <PlaceholderChart height={CHART_HEIGHT} width={width} />
-            )
-          }
+          {({ width }) => (
+            <ApyGraph
+              width={width}
+              height={CHART_HEIGHT}
+              data={data}
+              fields={fields}
+              selectedTimeRange={selectedTimeRange}
+              avgFieldName={graphKey === 'supply' ? 'liquidityRate' : 'variableBorrowRate'}
+            />
+          )}
         </ParentSize>
       )}
     </Box>

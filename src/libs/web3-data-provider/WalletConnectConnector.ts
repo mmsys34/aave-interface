@@ -4,7 +4,7 @@ import {
 } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { ConnectorUpdate } from '@web3-react/types';
-import { getSupportedChainIds } from 'src/utils/marketsAndNetworksConfig';
+import { getNetworkConfig, getSupportedChainIds } from 'src/utils/marketsAndNetworksConfig';
 import invariant from 'tiny-invariant';
 
 export const URI_AVAILABLE = 'URI_AVAILABLE';
@@ -27,17 +27,18 @@ export class WalletConnectConnector extends AbstractConnector {
 
     const supportedChainIds = getSupportedChainIds();
 
+    const rpcMap = supportedChainIds.reduce((acc, network) => {
+      const config = getNetworkConfig(network);
+      acc[network] = config.privateJsonRPCUrl || config.publicJsonRPCUrl[0];
+      return acc;
+    }, {} as { [networkId: number]: string });
+
     this.config = {
       chains: [defaultChainId],
       optionalChains: supportedChainIds,
+      rpcMap,
       projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
       showQrModal: true,
-      metadata: {
-        name: 'Aave',
-        description: 'Non-custodial liquidity protocol',
-        url: 'https://app.aave.com',
-        icons: ['https://avatars.githubusercontent.com/u/47617460?s=200&v=4'],
-      },
     };
 
     this.handleChainChanged = this.handleChainChanged.bind(this);
@@ -85,7 +86,7 @@ export class WalletConnectConnector extends AbstractConnector {
     }
   }
 
-  public async getProvider(): Promise<EthereumProvider | undefined> {
+  public async getProvider(): Promise<typeof this.walletConnectProvider> {
     return this.walletConnectProvider;
   }
 

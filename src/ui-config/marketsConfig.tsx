@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 
+import { ChainIds } from '../utils/const';
+
 // Enable for premissioned market
 // import { PermissionView } from 'src/components/transactions/FlowCommons/PermissionView';
 export type MarketDataType = {
@@ -25,7 +27,6 @@ export type MarketDataType = {
   permissionComponent?: ReactNode;
   disableCharts?: boolean;
   subgraphUrl?: string;
-  logo?: string;
   addresses: {
     LENDING_POOL_ADDRESS_PROVIDER: string;
     LENDING_POOL: string;
@@ -42,47 +43,63 @@ export type MarketDataType = {
     UI_INCENTIVE_DATA_PROVIDER?: string;
     COLLECTOR?: string;
     V3_MIGRATOR?: string;
+    GHO_TOKEN_ADDRESS?: string;
+    GHO_UI_DATA_PROVIDER?: string;
+  };
+  /**
+   * https://www.hal.xyz/ has integrated aave for healtfactor warning notification
+   * the integration doesn't follow aave market naming & only supports a subset of markets.
+   * When a halIntegration is specified a link to hal will be displayed on the ui.
+   */
+  halIntegration?: {
+    URL: string;
+    marketName: string;
   };
 };
 export enum CustomMarket {
+  // v3 test networks, all v3.0.1
+  proto_testnet_v3 = 'proto_testnet_v3',
   // v3 mainnets
-  proto_mainnet_v3 = 'proto_mainnet_v3',
+  // proto_flow_v3 = 'proto_flow_v3',
 }
-
-const apiKey = process.env.NEXT_PUBLIC_SUBGRAPH_API_KEY;
 
 export const marketsData: {
   [key in keyof typeof CustomMarket]: MarketDataType;
 } = {
-  [CustomMarket.proto_mainnet_v3]: {
-    marketTitle: 'Testnet',
-    market: CustomMarket.proto_mainnet_v3,
-    chainId: 545, // flow evm
+  [CustomMarket.proto_testnet_v3]: {
+    marketTitle: 'EVM on Flow Testnet',
+    market: CustomMarket.proto_testnet_v3,
+    chainId: ChainIds.flowEVMTestnet,
     v3: true,
     enabledFeatures: {
-      governance: true,
+      governance: false,
       staking: false,
       liquiditySwap: false,
       collateralRepay: false,
-      incentives: true,
-      withdrawAndSwitch: true,
-      debtSwitch: true,
-      switch: true,
+      incentives: false,
+      withdrawAndSwitch: false,
+      debtSwitch: false,
+      switch: false,
     },
-    subgraphUrl: `https://gateway-arbitrum.network.thegraph.com/api/${apiKey}/subgraphs/id/Cd2gEDVeqnjBn1hSeqFMitw8Q1iiyV9FYUZkLNRcL87g`,
+    subgraphUrl: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v3',
     addresses: {
-      LENDING_POOL_ADDRESS_PROVIDER: "0x1889E576B81aD3f4898A573ccBfe51826a83A5dF",
-      LENDING_POOL: "0x1b25710AacE7d1Eb8234088e6D4D0bD3A3f58dc8",
-      WETH_GATEWAY: "0x734f9cF5f0A2E49Dc73fDA33CF92147e76c2DAC1",
+      LENDING_POOL_ADDRESS_PROVIDER: '0xEe5C46a2Ed7c985e10852b364472c86B7FDE9488',
+      LENDING_POOL: '0x48Dad407aB7299E0175F39F4Cd12c524DB0AB002',
+      WETH_GATEWAY: '0xF50E9dbfc966C3cf26E62F3A27dB68de7eF7462d',
       // REPAY_WITH_COLLATERAL_ADAPTER: AaveV3Ethereum.REPAY_WITH_COLLATERAL_ADAPTER,
       // SWAP_COLLATERAL_ADAPTER: AaveV3Ethereum.SWAP_COLLATERAL_ADAPTER,
-      WALLET_BALANCE_PROVIDER: "0xA2eE8c6869fe9c8EB3aAB7B07020103Ce1A4E543",
-      UI_POOL_DATA_PROVIDER: "",
-      UI_INCENTIVE_DATA_PROVIDER: "0xC73cD42EEA1Dc3911Fc1AC87Ed95dc56CE61Fb42",
+      WALLET_BALANCE_PROVIDER: '0x45b29e8Ac5c407dE894B2F8b9679D75865c913BC',
+      UI_POOL_DATA_PROVIDER: '0x504F9be69B51e14ad0B8622eB9BCA9C94FCd5718',
+      // UI_INCENTIVE_DATA_PROVIDER: AaveV3Ethereum.UI_INCENTIVE_DATA_PROVIDER,
       // COLLECTOR: AaveV3Ethereum.COLLECTOR,
+      // GHO_TOKEN_ADDRESS: AaveV3Ethereum.ASSETS.GHO.UNDERLYING,
       // GHO_UI_DATA_PROVIDER: AaveV3Ethereum.UI_GHO_DATA_PROVIDER,
       // WITHDRAW_SWITCH_ADAPTER: AaveV3Ethereum.WITHDRAW_SWAP_ADAPTER,
       // DEBT_SWITCH_ADAPTER: AaveV3Ethereum.DEBT_SWAP_ADAPTER,
+    },
+    halIntegration: {
+      URL: 'https://app.hal.xyz/recipes/aave-v3-track-health-factor',
+      marketName: 'aavev3',
     },
   },
 } as const;

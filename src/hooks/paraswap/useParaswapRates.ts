@@ -5,6 +5,7 @@ import { BigNumber, constants, PopulatedTransaction } from 'ethers';
 import { queryKeysFactory } from 'src/ui-config/queries';
 
 import { getParaswap } from './common';
+import { feeClaimer } from 'src/utils/const';
 
 type ParaSwapSellRatesParams = {
   amount: string;
@@ -29,7 +30,7 @@ export const useParaswapSellRates = ({
 }: ParaSwapSellRatesParams) => {
   return useQuery<OptimalRate | undefined>({
     queryFn: () => {
-      const { paraswap } = getParaswap(chainId);
+      const paraswap = getParaswap(chainId);
       return paraswap.getRate({
         amount,
         srcToken,
@@ -40,14 +41,7 @@ export const useParaswapSellRates = ({
         side: SwapSide.SELL,
         options: {
           ...options,
-          excludeDEXS: [
-            'ParaSwapPool',
-            'ParaSwapLimitOrders',
-            'SwaapV2',
-            'Hashflow',
-            'Dexalot',
-            'Bebop',
-          ],
+          excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders'],
         },
       });
     },
@@ -72,6 +66,7 @@ type UseParaswapSellTxParams = {
 };
 
 export const useParaswapSellTxParams = (chainId: number) => {
+  const FEE_CLAIMER_ADDRESS = feeClaimer;
   return useMutation<PopulatedTransaction, unknown, UseParaswapSellTxParams>({
     mutationFn: async ({
       srcToken,
@@ -85,7 +80,7 @@ export const useParaswapSellTxParams = (chainId: number) => {
       deadline,
       partner,
     }: UseParaswapSellTxParams) => {
-      const { paraswap, feeTarget } = getParaswap(chainId);
+      const paraswap = getParaswap(chainId);
       const response = await paraswap.buildTx(
         {
           srcToken,
@@ -98,10 +93,9 @@ export const useParaswapSellTxParams = (chainId: number) => {
           slippage: maxSlippage,
           takeSurplus: true,
           partner,
-          partnerAddress: feeTarget,
+          partnerAddress: FEE_CLAIMER_ADDRESS,
           permit,
           deadline,
-          isDirectFeeTransfer: true,
         },
         { ignoreChecks: true }
       );

@@ -1,3 +1,3 @@
 export const uiConfig = {
-  appLogo: '/logo-header.webp',
+  appLogo: '/logo-header.png',
 };

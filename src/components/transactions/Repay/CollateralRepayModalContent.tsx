@@ -21,7 +21,6 @@ import {
 import { useCollateralRepaySwap } from 'src/hooks/paraswap/useCollateralRepaySwap';
 import { useModalContext } from 'src/hooks/useModal';
 import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
-import { useZeroLTVBlockingWithdraw } from 'src/hooks/useZeroLTVBlockingWithdraw';
 import { useWeb3Context } from 'src/libs/hooks/useWeb3Context';
 import { ListSlippageButton } from 'src/modules/dashboard/lists/SlippageList';
 import { calculateHFAfterRepay } from 'src/utils/hfUtils';
@@ -34,7 +33,7 @@ import {
   DetailsNumberLineWithSub,
   TxModalDetails,
 } from '../FlowCommons/TxModalDetails';
-import { ErrorType, useFlashloan } from '../utils';
+import { ErrorType, useFlashloan, zeroLTVBlockingWithdraw } from '../utils';
 import { ParaswapErrorDisplay } from '../Warnings/ParaswapErrorDisplay';
 import { CollateralRepayActions } from './CollateralRepayActions';
 
@@ -71,9 +70,7 @@ export function CollateralRepayModalContent({
   const [tokenToRepayWith, setTokenToRepayWith] = useState<Asset>(repayTokens[0]);
   const tokenToRepayWithBalance = tokenToRepayWith.balance || '0';
 
-  // const [swapVariant, setSwapVariant] = useState<SwapVariant>('exactOut');
-  const swapVariant: SwapVariant = 'exactOut';
-
+  const [swapVariant, setSwapVariant] = useState<SwapVariant>('exactOut');
   const [amount, setAmount] = useState('');
   const [maxSlippage, setMaxSlippage] = useState('0.5');
 
@@ -83,7 +80,10 @@ export function CollateralRepayModalContent({
     (reserve) => reserve.underlyingAsset === tokenToRepayWith.address
   ) as ComputedReserveData;
 
-  const debt = userReserve?.variableBorrows || '0';
+  const debt =
+    debtType === InterestRate.Stable
+      ? userReserve?.stableBorrows || '0'
+      : userReserve?.variableBorrows || '0';
 
   let safeAmountToRepayAll = valueToBigNumber(debt);
   // Add in the approximate interest accrued over the next 30 minutes
@@ -106,10 +106,10 @@ export function CollateralRepayModalContent({
 
   const swapIn = { ...collateralReserveData, amount: tokenToRepayWithBalance };
   const swapOut = { ...poolReserve, amount: amountRef.current };
-  // if (swapVariant === 'exactIn') {
-  //   swapIn.amount = tokenToRepayWithBalance;
-  //   swapOut.amount = '0';
-  // }
+  if (swapVariant === 'exactIn') {
+    swapIn.amount = tokenToRepayWithBalance;
+    swapOut.amount = '0';
+  }
 
   const repayAllDebt =
     isMaxSelected &&
@@ -138,23 +138,21 @@ export function CollateralRepayModalContent({
 
   const handleRepayAmountChange = (value: string) => {
     const maxSelected = value === '-1';
-    amountRef.current = maxSelected ? safeAmountToRepayAll.toString(10) : value;
-    setAmount(value);
 
-    // if (
-    //   maxSelected &&
-    //   valueToBigNumber(tokenToRepayWithBalance).lt(collateralAmountRequiredToCoverDebt)
-    // ) {
-    //   // The selected collateral amount is not enough to pay the full debt. We'll try to do a swap using the exact amount of collateral.
-    //   // The amount won't be known until we fetch the swap data, so we'll clear it out. Once the swap data is fetched, we'll set the amount.
-    //   amountRef.current = '';
-    //   setAmount('');
-    //   setSwapVariant('exactIn');
-    // } else {
-    //   amountRef.current = maxSelected ? safeAmountToRepayAll.toString(10) : value;
-    //   setAmount(value);
-    //   setSwapVariant('exactOut');
-    // }
+    if (
+      maxSelected &&
+      valueToBigNumber(tokenToRepayWithBalance).lt(collateralAmountRequiredToCoverDebt)
+    ) {
+      // The selected collateral amount is not enough to pay the full debt. We'll try to do a swap using the exact amount of collateral.
+      // The amount won't be known until we fetch the swap data, so we'll clear it out. Once the swap data is fetched, we'll set the amount.
+      amountRef.current = '';
+      setAmount('');
+      setSwapVariant('exactIn');
+    } else {
+      amountRef.current = maxSelected ? safeAmountToRepayAll.toString(10) : value;
+      setAmount(value);
+      setSwapVariant('exactOut');
+    }
   };
 
   // for v3 we need hf after withdraw collateral, because when removing collateral to repay
@@ -191,10 +189,10 @@ export function CollateralRepayModalContent({
     collateralReserveData.priceInUSD
   );
 
-  const exactOutputAmount = repayAmount; // swapVariant === 'exactIn' ? outputAmount : repayAmount;
-  const exactOutputUsd = repayAmountUsdValue; // swapVariant === 'exactIn' ? outputAmountUSD : repayAmountUsdValue;
+  const exactOutputAmount = swapVariant === 'exactIn' ? outputAmount : repayAmount;
+  const exactOutputUsd = swapVariant === 'exactIn' ? outputAmountUSD : repayAmountUsdValue;
 
-  const assetsBlockingWithdraw = useZeroLTVBlockingWithdraw();
+  const assetsBlockingWithdraw: string[] = zeroLTVBlockingWithdraw(user);
 
   let blockingError: ErrorType | undefined = undefined;
 
@@ -216,8 +214,8 @@ export function CollateralRepayModalContent({
       case ErrorType.ZERO_LTV_WITHDRAW_BLOCKED:
         return (
           <Trans>
-            Assets with zero LTV ({assetsBlockingWithdraw.join(', ')}) must be withdrawn or disabled
-            as collateral to perform this action
+            Assets with zero LTV ({assetsBlockingWithdraw}) must be withdrawn or disabled as
+            collateral to perform this action
           </Trans>
         );
       case ErrorType.FLASH_LOAN_NOT_AVAILABLE:
@@ -317,7 +315,7 @@ export function CollateralRepayModalContent({
             setSlippage={setMaxSlippage}
             slippageTooltipHeader={
               <Stack direction="row" alignItems="center">
-                {false ? (
+                {swapVariant === 'exactIn' ? (
                   <>
                     <Trans>Minimum amount of debt to be repaid</Trans>
                     <Stack alignItems="end">
@@ -380,8 +378,8 @@ export function CollateralRepayModalContent({
       <CollateralRepayActions
         poolReserve={poolReserve}
         fromAssetData={collateralReserveData}
-        repayAmount={outputAmount}
-        repayWithAmount={inputAmountWithSlippage}
+        repayAmount={swapVariant === 'exactIn' ? outputAmountWithSlippage : outputAmount}
+        repayWithAmount={swapVariant === 'exactOut' ? inputAmountWithSlippage : inputAmount}
         repayAllDebt={repayAllDebt}
         useFlashLoan={shouldUseFlashloan}
         isWrongNetwork={isWrongNetwork}

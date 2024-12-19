@@ -7,7 +7,7 @@ export const WalletModal = () => {
   const { isWalletModalOpen, setWalletModalOpen } = useWalletModalContext();
 
   return (
-    <BasicModal disableEnforceFocus={true} open={isWalletModalOpen} setOpen={setWalletModalOpen}>
+    <BasicModal open={isWalletModalOpen} setOpen={setWalletModalOpen}>
       <WalletSelector />
     </BasicModal>
   );

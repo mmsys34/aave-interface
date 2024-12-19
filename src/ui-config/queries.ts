@@ -127,9 +127,9 @@ export const queryKeysFactory = {
     token,
     'poolApprovedAmount',
   ],
-  approvedAmount: (user: string, token: string, spender: string, chainId: number) => [
+  approvedAmount: (user: string, token: string, spender: string, marketData: MarketDataType) => [
     ...queryKeysFactory.user(user),
-    chainId,
+    ...queryKeysFactory.market(marketData),
     token,
     spender,
     'approvedAmount',
@@ -146,12 +146,6 @@ export const queryKeysFactory = {
     chainId,
     'tokenDelegatees',
   ],
-  getGhoBridgeBalances: (user: string, marketData: MarketDataType) => [
-    ...queryKeysFactory.gho,
-    ...queryKeysFactory.user(user),
-    ...queryKeysFactory.market(marketData),
-    'getGhoBridgeBalances',
-  ],
   migrationExceptions: (
     suplies: MigrationSupplyException[],
     marketFrom: MarketDataType,
@@ -166,11 +160,6 @@ export const queryKeysFactory = {
     tokenList.map((elem) => elem.address),
     chainId,
     'tokensBalance',
-  ],
-  poolEModes: (marketData: MarketDataType) => [
-    ...queryKeysFactory.pool,
-    ...queryKeysFactory.market(marketData),
-    'poolEModes',
   ],
 };
 

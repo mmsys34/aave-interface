@@ -1,4 +1,5 @@
 import { ChainId, WalletBalanceProvider } from '@aave/contract-helpers';
+import { normalize } from '@aave/math-utils';
 import { Provider } from '@ethersproject/providers';
 import { MarketDataType } from 'src/ui-config/marketsConfig';
 
@@ -22,6 +23,44 @@ export class WalletBalanceService {
       walletBalanceProviderAddress,
       provider,
     });
+  }
+
+  async getGovernanceTokensBalance(
+    chainId: ChainId,
+    walletBalanceProviderAddress: string,
+    user: string,
+    blockHash?: string
+  ): Promise<GovernanceTokensBalance> {
+    // const walletBalanceService = this.getWalletBalanceService(
+    //   chainId,
+    //   walletBalanceProviderAddress
+    // );
+
+    console.log(chainId, walletBalanceProviderAddress, user);
+
+    const options: { blockTag?: string } = {};
+    if (blockHash) {
+      options.blockTag = blockHash;
+    }
+    // const balances = await walletBalanceService.batchBalanceOf(
+    //   [user],
+    //   [
+    //     governanceV3Config.votingAssets.aaveTokenAddress,
+    //     governanceV3Config.votingAssets.aAaveTokenAddress,
+    //     governanceV3Config.votingAssets.stkAaveTokenAddress,
+    //   ],
+    //   options
+    // );
+    // return {
+    //   aave: normalize(balances[0].toString(), 18),
+    //   aAave: normalize(balances[1].toString(), 18),
+    //   stkAave: normalize(balances[2].toString(), 18),
+    // };
+    return {
+      aave: normalize('0', 18),
+      aAave: normalize('0', 18),
+      stkAave: normalize('0', 18),
+    };
   }
 
   async getPoolTokensBalances(

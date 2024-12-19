@@ -108,7 +108,7 @@ export default function MyApp(props: MyAppProps) {
     } else {
       console.log('no analytics tracking');
     }
-  }, []);
+  }, [MIXPANEL_TOKEN, initializeMixpanel]);
 
   return (
     <CacheProvider value={emotionCache}>
@@ -118,9 +118,9 @@ export default function MyApp(props: MyAppProps) {
       <Meta
         title={'Open Source Liquidity Protocol'}
         description={
-          'MoreMarkets is an Open Source Protocol to create Non-Custodial Liquidity Markets to earn interest on supplying and borrowing assets with a variable or stable interest rate on Flow EVM network.'
+          'MoreMarkets is an Open Source Protocol to create Non-Custodial Liquidity Markets to earn interest on supplying and borrowing assets with a variable or stable interest rate. The protocol is designed for easy integration into your products and services.'
         }
-        imageUrl="https://cdn.prod.website-files.com/6618ffb14f6deabedc97531d/66742b16f9d7dfec3b6313b7_more_logo_light.png"
+        imageUrl="https://app.aave.com/aaveMetaLogo-min.jpg"
       />
       <LanguageProvider>
         <QueryClientProvider client={queryClient}>

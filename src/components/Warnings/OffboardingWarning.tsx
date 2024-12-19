@@ -1,5 +1,11 @@
 import { Trans } from '@lingui/macro';
+import { CustomMarket } from 'src/ui-config/marketsConfig';
+
 import { Link } from '../primitives/Link';
+
+export const AssetsBeingOffboarded: { [market: string]: { [symbol: string]: string } } = {
+  [CustomMarket.proto_testnet_v3]: {},
+};
 
 export const OffboardingWarning = ({ discussionLink }: { discussionLink: string }) => {
   return (

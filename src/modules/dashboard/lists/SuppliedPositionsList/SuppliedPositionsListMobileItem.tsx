@@ -1,11 +1,8 @@
-import { ProtocolAction } from '@aave/contract-helpers';
 import { Trans } from '@lingui/macro';
 import { Box, Button } from '@mui/material';
-import { MeritIncentivesButton } from 'src/components/incentives/IncentivesButton';
 import { useAppDataContext } from 'src/hooks/app-data-provider/useAppDataProvider';
 import { useAssetCaps } from 'src/hooks/useAssetCaps';
 import { DashboardReserve } from 'src/utils/dashboardSortUtils';
-import { showExternalIncentivesTooltip } from 'src/utils/utils';
 
 import { IncentivesCard } from '../../../../components/incentives/IncentivesCard';
 import { Row } from '../../../../components/primitives/Row';
@@ -62,11 +59,6 @@ export const SuppliedPositionsListMobileItem = ({
       frozen={reserve.isFrozen}
       showSupplyCapTooltips
       showDebtCeilingTooltips
-      showExternalIncentivesTooltips={showExternalIncentivesTooltip(
-        reserve.symbol,
-        currentMarket,
-        ProtocolAction.supply
-      )}
     >
       <ListValueRow
         title={<Trans>Supply balance</Trans>}
@@ -81,19 +73,12 @@ export const SuppliedPositionsListMobileItem = ({
         captionVariant="description"
         mb={2}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <IncentivesCard
-            value={Number(supplyAPY)}
-            incentives={aIncentivesData}
-            symbol={symbol}
-            variant="secondary14"
-          />
-          <MeritIncentivesButton
-            symbol={symbol}
-            market={currentMarket}
-            protocolAction={ProtocolAction.supply}
-          />
-        </Box>
+        <IncentivesCard
+          value={Number(supplyAPY)}
+          incentives={aIncentivesData}
+          symbol={symbol}
+          variant="secondary14"
+        />
       </Row>
 
       <Row

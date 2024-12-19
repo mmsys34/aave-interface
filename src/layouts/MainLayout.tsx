@@ -9,15 +9,12 @@ import { AppHeader } from './AppHeader';
 import TopBarNotify from './TopBarNotify';
 
 export function MainLayout({ children }: { children: ReactNode }) {
-  const APP_BANNER_VERSION = '5.0.0';
-
   return (
     <>
       <TopBarNotify
-        learnMoreLink="https://oh7vm38ynd2.typeform.com/to/Fnw3rMyw"
-        notifyText="Looking to provide product feedback? We'd love to hear from you! 👉"
-        bannerVersion={APP_BANNER_VERSION}
-        buttonText="Share feedback"
+        notifyText="Users can now stake GHO in the safety module 🎉"
+        learnMoreLink="https://app.aave.com/staking"
+        buttonText="Learn More"
       />
       <AppHeader />
       <Box component="main" sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>

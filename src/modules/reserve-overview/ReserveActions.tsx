@@ -1,4 +1,4 @@
-import { API_ETH_MOCK_ADDRESS } from '@aave/contract-helpers';
+import { API_ETH_MOCK_ADDRESS, InterestRate } from '@aave/contract-helpers';
 import { BigNumberValue, USD_DECIMALS, valueToBigNumber } from '@aave/math-utils';
 import { Trans } from '@lingui/macro';
 import {
@@ -31,7 +31,7 @@ import { BuyWithFiat } from 'src/modules/staking/BuyWithFiat';
 import { useRootStore } from 'src/store/root';
 import { getMaxAmountAvailableToBorrow } from 'src/utils/getMaxAmountAvailableToBorrow';
 import { getMaxAmountAvailableToSupply } from 'src/utils/getMaxAmountAvailableToSupply';
-import { displayGhoForMintableMarket } from 'src/utils/ghoUtilities';
+import { displayGho } from 'src/utils/ghoUtilities';
 import { GENERAL } from 'src/utils/mixPanelEvents';
 import { amountToUsd } from 'src/utils/utils';
 
@@ -78,10 +78,14 @@ export const ReserveActions = ({ reserve }: ReserveActionsProps) => {
 
   let maxAmountToBorrow = '0';
   let maxAmountToSupply = '0';
-  const isGho = displayGhoForMintableMarket({ symbol: reserve.symbol, currentMarket });
+  const isGho = displayGho({ symbol: reserve.symbol, currentMarket });
 
   if (user) {
-    maxAmountToBorrow = getMaxAmountAvailableToBorrow(reserve, user).toString();
+    maxAmountToBorrow = getMaxAmountAvailableToBorrow(
+      reserve,
+      user,
+      InterestRate.Variable
+    ).toString();
 
     maxAmountToSupply = getMaxAmountAvailableToSupply(
       balance?.amount || '0',

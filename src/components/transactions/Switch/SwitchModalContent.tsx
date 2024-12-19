@@ -40,50 +40,6 @@ interface SwitchModalContentProps {
   addNewToken: (token: TokenInfoWithBalance) => Promise<void>;
 }
 
-enum ValidationSeverity {
-  ERROR = 'error',
-  WARNING = 'warning',
-}
-
-export interface ValidationData {
-  message: string;
-  severity: ValidationSeverity;
-}
-
-const validateSlippage = (slippage: string): ValidationData | undefined => {
-  try {
-    const numberSlippage = Number(slippage);
-    if (Number.isNaN(numberSlippage))
-      return {
-        message: 'Invalid slippage',
-        severity: ValidationSeverity.ERROR,
-      };
-    if (numberSlippage > 30)
-      return {
-        message: 'Slippage must be lower 30%',
-        severity: ValidationSeverity.ERROR,
-      };
-    if (numberSlippage < 0)
-      return {
-        message: 'Slippage must be positive',
-        severity: ValidationSeverity.ERROR,
-      };
-    if (numberSlippage > 10)
-      return {
-        message: 'High slippage',
-        severity: ValidationSeverity.WARNING,
-      };
-    if (numberSlippage < 0.1)
-      return {
-        message: 'Slippage lower than 0.1% may result in failed transactions',
-        severity: ValidationSeverity.WARNING,
-      };
-    return undefined;
-  } catch {
-    return { message: 'Invalid slippage', severity: ValidationSeverity.ERROR };
-  }
-};
-
 export const SwitchModalContent = ({
   supportedNetworks,
   selectedChainId,
@@ -93,7 +49,7 @@ export const SwitchModalContent = ({
   tokens,
   addNewToken,
 }: SwitchModalContentProps) => {
-  const [slippage, setSlippage] = useState('0.10');
+  const [slippage, setSlippage] = useState('0.001');
   const [inputAmount, setInputAmount] = useState('');
   const [debounceInputAmount, setDebounceInputAmount] = useState('');
   const { mainTxState: switchTxState, gasLimit, txError, setTxError } = useModalContext();
@@ -107,13 +63,6 @@ export const SwitchModalContent = ({
   const { readOnlyModeAddress } = useWeb3Context();
 
   const isWrongNetwork = useIsWrongNetwork(selectedChainId);
-
-  const slippageValidation = validateSlippage(slippage);
-
-  const safeSlippage =
-    slippageValidation && slippageValidation.severity === ValidationSeverity.ERROR
-      ? 0
-      : Number(slippage) / 100;
 
   const handleInputChange = (value: string) => {
     setTxError(undefined);
@@ -165,7 +114,7 @@ export const SwitchModalContent = ({
         outIconUri={selectedOutputToken.logoURI}
         outAmount={(
           Number(normalize(sellRates.destAmount, sellRates.destDecimals)) *
-          (1 - safeSlippage)
+          (1 - Number(slippage))
         ).toString()}
       />
     );
@@ -231,11 +180,7 @@ export const SwitchModalContent = ({
           selectedNetwork={selectedChainId}
           setSelectedNetwork={handleSelectedNetworkChange}
         />
-        <SwitchSlippageSelector
-          slippageValidation={slippageValidation}
-          slippage={slippage}
-          setSlippage={setSlippage}
-        />
+        <SwitchSlippageSelector slippage={slippage} setSlippage={setSlippage} />
       </Box>
       {!selectedInputToken || !selectedOutputToken ? (
         <CircularProgress />
@@ -267,15 +212,9 @@ export const SwitchModalContent = ({
                 borderColor: 'divider',
                 position: 'absolute',
                 backgroundColor: 'background.paper',
-                '&:hover': { backgroundColor: 'background.surface' },
               }}
             >
-              <SvgIcon
-                sx={{
-                  color: 'primary.main',
-                  fontSize: '18px',
-                }}
-              >
+              <SvgIcon sx={{ color: 'primary.main', fontSize: '18px' }}>
                 <SwitchVerticalIcon />
               </SvgIcon>
             </IconButton>
@@ -320,7 +259,7 @@ export const SwitchModalContent = ({
                   variant="caption"
                   value={
                     Number(normalize(sellRates.destAmount, sellRates.destDecimals)) *
-                    (1 - safeSlippage)
+                    (1 - Number(slippage))
                   }
                 />
               </Row>
@@ -333,7 +272,7 @@ export const SwitchModalContent = ({
                   symbol="usd"
                   symbolsVariant="caption"
                   variant="caption"
-                  value={Number(sellRates.destUSD) * (1 - safeSlippage)}
+                  value={Number(sellRates.destUSD) * (1 - Number(slippage))}
                 />
               </Row>
             </TxModalDetails>
@@ -361,12 +300,11 @@ export const SwitchModalContent = ({
                 outputToken={selectedOutputToken.address}
                 inputName={selectedInputToken.name}
                 outputName={selectedOutputToken.name}
-                slippage={safeSlippage.toString()}
+                slippage={slippage}
                 blocked={
                   !sellRates ||
                   Number(debounceInputAmount) > Number(selectedInputToken.balance) ||
-                  !user ||
-                  slippageValidation?.severity === ValidationSeverity.ERROR
+                  !user
                 }
                 chainId={selectedChainId}
                 route={sellRates}

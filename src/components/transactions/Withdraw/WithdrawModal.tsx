@@ -1,8 +1,10 @@
 import { Trans } from '@lingui/macro';
 import React, { useState } from 'react';
 import { UserAuthenticated } from 'src/components/UserAuthenticated';
+import { useAppDataContext } from 'src/hooks/app-data-provider/useAppDataProvider';
 import { ModalContextType, ModalType, useModalContext } from 'src/hooks/useModal';
 import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
+import { getGhoReserve } from 'src/utils/ghoUtilities';
 import { isFeatureEnabled } from 'src/utils/marketsAndNetworksConfig';
 
 import { BasicModal } from '../../primitives/BasicModal';
@@ -18,8 +20,13 @@ export const WithdrawModal = () => {
   const [withdrawUnWrapped, setWithdrawUnWrapped] = useState(true);
   const [withdrawType, setWithdrawType] = useState(WithdrawType.WITHDRAW);
   const { currentMarketData } = useProtocolDataContext();
+  const { reserves } = useAppDataContext();
 
-  const isWithdrawAndSwapPossible = isFeatureEnabled.withdrawAndSwitch(currentMarketData);
+  const ghoReserve = getGhoReserve(reserves);
+
+  const isWithdrawAndSwapPossible =
+    isFeatureEnabled.withdrawAndSwitch(currentMarketData) &&
+    args.underlyingAsset !== ghoReserve?.underlyingAsset;
 
   const handleClose = () => {
     setWithdrawType(WithdrawType.WITHDRAW);

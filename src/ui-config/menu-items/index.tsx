@@ -1,9 +1,4 @@
-import {
-  ArrowCircleRightIcon,
-  BookOpenIcon,
-  CreditCardIcon,
-  QuestionMarkCircleIcon,
-} from '@heroicons/react/outline';
+import { BookOpenIcon, CreditCardIcon, QuestionMarkCircleIcon } from '@heroicons/react/outline';
 import { t } from '@lingui/macro';
 import { ReactNode } from 'react';
 import { ROUTES } from 'src/components/primitives/Link';
@@ -17,6 +12,12 @@ interface Navigation {
   isVisible?: (data: MarketDataType) => boolean | undefined;
   dataCy?: string;
 }
+
+console.log(
+  process.env.NEXT_PUBLIC_ENV,
+  process.env.NEXT_PUBLIC_ENABLE_STAKING,
+  process.env.NEXT_PUBLIC_ENABLE_GOVERNANCE
+);
 
 export const navigation: Navigation[] = [
   {
@@ -42,10 +43,10 @@ export const navigation: Navigation[] = [
     link: ROUTES.governance,
     title: t`Governance`,
     dataCy: 'menuGovernance',
-    // isVisible: () =>
-    //   process.env.NEXT_PUBLIC_ENABLE_GOVERNANCE === 'true' &&
-    //   process.env.NEXT_PUBLIC_ENV === 'prod' &&
-    //   !ENABLE_TESTNET,
+    isVisible: () =>
+      process.env.NEXT_PUBLIC_ENABLE_GOVERNANCE === 'true' &&
+      process.env.NEXT_PUBLIC_ENV === 'prod' &&
+      !ENABLE_TESTNET,
   },
   {
     link: ROUTES.faucet,
@@ -69,11 +70,6 @@ const moreMenuItems: MoreMenuItem[] = [
     link: 'https://docs.aave.com/portal/',
     title: t`Developers`,
     icon: <BookOpenIcon />,
-  },
-  {
-    link: 'https://legacy-markets.aave.com/',
-    title: t`Legacy Markets`,
-    icon: <ArrowCircleRightIcon />,
   },
 ];
 

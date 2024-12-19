@@ -1,7 +1,5 @@
-import { ProtocolAction } from '@aave/contract-helpers';
 import { Trans } from '@lingui/macro';
 import { Box, Button } from '@mui/material';
-import { MeritIncentivesButton } from 'src/components/incentives/IncentivesButton';
 import { useAssetCaps } from 'src/hooks/useAssetCaps';
 import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
 import { DashboardReserve } from 'src/utils/dashboardSortUtils';
@@ -74,19 +72,12 @@ export const SupplyAssetsListMobileItem = ({
         captionVariant="description"
         mb={2}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <IncentivesCard
-            value={Number(supplyAPY)}
-            incentives={aIncentivesData}
-            symbol={symbol}
-            variant="secondary14"
-          />
-          <MeritIncentivesButton
-            symbol={symbol}
-            market={currentMarket}
-            protocolAction={ProtocolAction.supply}
-          />
-        </Box>
+        <IncentivesCard
+          value={Number(supplyAPY)}
+          incentives={aIncentivesData}
+          symbol={symbol}
+          variant="secondary14"
+        />
       </Row>
 
       <Row

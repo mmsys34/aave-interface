@@ -1,4 +1,3 @@
-import { ProtocolAction } from '@aave/contract-helpers';
 import { Trans } from '@lingui/macro';
 import { Button } from '@mui/material';
 import { useAppDataContext } from 'src/hooks/app-data-provider/useAppDataProvider';
@@ -7,7 +6,6 @@ import { useModalContext } from 'src/hooks/useModal';
 import { useRootStore } from 'src/store/root';
 import { DashboardReserve } from 'src/utils/dashboardSortUtils';
 import { GENERAL } from 'src/utils/mixPanelEvents';
-import { showExternalIncentivesTooltip } from 'src/utils/utils';
 
 import { ListColumn } from '../../../../components/lists/ListColumn';
 import { useProtocolDataContext } from '../../../../hooks/useProtocolDataContext';
@@ -30,9 +28,8 @@ export const SuppliedPositionsListItem = ({
   const { currentMarketData, currentMarket } = useProtocolDataContext();
   const { openSupply, openWithdraw, openCollateralChange, openSwap } = useModalContext();
   const { debtCeiling } = useAssetCaps();
+  const isSwapButton = isFeatureEnabled.liquiditySwap(currentMarketData);
   const trackEvent = useRootStore((store) => store.trackEvent);
-
-  const showSwitchButton = isFeatureEnabled.liquiditySwap(currentMarketData);
 
   const canBeEnabledAsCollateral = user
     ? !debtCeiling.isMaxed &&
@@ -60,11 +57,6 @@ export const SuppliedPositionsListItem = ({
       }`}
       showSupplyCapTooltips
       showDebtCeilingTooltips
-      showExternalIncentivesTooltips={showExternalIncentivesTooltip(
-        reserve.symbol,
-        currentMarket,
-        ProtocolAction.supply
-      )}
     >
       <ListValueColumn
         symbol={reserve.iconSymbol}
@@ -75,8 +67,6 @@ export const SuppliedPositionsListItem = ({
 
       <ListAPRColumn
         value={Number(reserve.supplyAPY)}
-        market={currentMarket}
-        protocolAction={ProtocolAction.supply}
         incentives={aIncentivesData}
         symbol={reserve.symbol}
       />
@@ -101,7 +91,7 @@ export const SuppliedPositionsListItem = ({
       </ListColumn>
 
       <ListButtonsColumn>
-        {showSwitchButton ? (
+        {isSwapButton ? (
           <Button
             disabled={disableSwap}
             variant="contained"

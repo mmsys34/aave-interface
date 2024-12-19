@@ -25,6 +25,7 @@ export interface BorrowActionsProps extends BoxProps {
   poolReserve: ComputedReserveData;
   amountToBorrow: string;
   poolAddress: string;
+  interestRateMode: InterestRate;
   isWrongNetwork: boolean;
   symbol: string;
   blocked: boolean;
@@ -36,6 +37,7 @@ export const BorrowActions = React.memo(
     poolReserve,
     amountToBorrow,
     poolAddress,
+    interestRateMode,
     isWrongNetwork,
     blocked,
     sx,
@@ -74,7 +76,10 @@ export const BorrowActions = React.memo(
       try {
         if (requiresApproval && approvedAmount) {
           let approveDelegationTxData = generateApproveDelegation({
-            debtTokenAddress: poolReserve.variableDebtTokenAddress,
+            debtTokenAddress:
+              interestRateMode === InterestRate.Variable
+                ? poolReserve.variableDebtTokenAddress
+                : poolReserve.stableDebtTokenAddress,
             delegatee: currentMarketData.addresses.WETH_GATEWAY ?? '',
             amount: MAX_UINT_AMOUNT,
           });
@@ -105,8 +110,11 @@ export const BorrowActions = React.memo(
         let borrowTxData = borrow({
           amount: parseUnits(amountToBorrow, poolReserve.decimals).toString(),
           reserve: poolAddress,
-          interestRateMode: InterestRate.Variable,
-          debtTokenAddress: poolReserve.variableDebtTokenAddress,
+          interestRateMode,
+          debtTokenAddress:
+            interestRateMode === InterestRate.Variable
+              ? poolReserve.variableDebtTokenAddress
+              : poolReserve.stableDebtTokenAddress,
         });
         borrowTxData = await estimateGasLimit(borrowTxData);
         const response = await sendTx(borrowTxData);
@@ -147,7 +155,10 @@ export const BorrowActions = React.memo(
         ) {
           setLoadingTxns(true);
           const approvedAmount = await getCreditDelegationApprovedAmount({
-            debtTokenAddress: poolReserve.variableDebtTokenAddress,
+            debtTokenAddress:
+              interestRateMode === InterestRate.Variable
+                ? poolReserve.variableDebtTokenAddress
+                : poolReserve.stableDebtTokenAddress,
             delegatee: currentMarketData.addresses.WETH_GATEWAY ?? '',
           });
           setApprovedAmount(approvedAmount);
@@ -173,7 +184,9 @@ export const BorrowActions = React.memo(
         approvedAmount,
         currentMarketData.addresses.WETH_GATEWAY,
         getCreditDelegationApprovedAmount,
+        interestRateMode,
         poolAddress,
+        poolReserve.stableDebtTokenAddress,
         poolReserve.variableDebtTokenAddress,
         setApprovalTxState,
         setLoadingTxns,

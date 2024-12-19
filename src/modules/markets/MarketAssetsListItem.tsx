@@ -1,18 +1,15 @@
-import { ProtocolAction } from '@aave/contract-helpers';
 import { Trans } from '@lingui/macro';
 import { Box, Button, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
-import { MeritIncentivesButton } from 'src/components/incentives/IncentivesButton';
+import { OffboardingTooltip } from 'src/components/infoTooltips/OffboardingToolTip';
 import { RenFILToolTip } from 'src/components/infoTooltips/RenFILToolTip';
-import { SpkAirdropTooltip } from 'src/components/infoTooltips/SpkAirdropTooltip';
-import { SuperFestTooltip } from 'src/components/infoTooltips/SuperFestTooltip';
 import { IsolatedEnabledBadge } from 'src/components/isolationMode/IsolatedBadge';
 import { NoData } from 'src/components/primitives/NoData';
 import { ReserveSubheader } from 'src/components/ReserveSubheader';
+import { AssetsBeingOffboarded } from 'src/components/Warnings/OffboardingWarning';
 import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
 import { useRootStore } from 'src/store/root';
 import { MARKETS } from 'src/utils/mixPanelEvents';
-import { showExternalIncentivesTooltip } from 'src/utils/utils';
 
 import { IncentivesCard } from '../../components/incentives/IncentivesCard';
 import { AMPLToolTip } from '../../components/infoTooltips/AMPLToolTip';
@@ -28,16 +25,7 @@ export const MarketAssetsListItem = ({ ...reserve }: ComputedReserveData) => {
   const { currentMarket } = useProtocolDataContext();
   const trackEvent = useRootStore((store) => store.trackEvent);
 
-  const externalIncentivesTooltipsSupplySide = showExternalIncentivesTooltip(
-    reserve.symbol,
-    currentMarket,
-    ProtocolAction.supply
-  );
-  const externalIncentivesTooltipsBorrowSide = showExternalIncentivesTooltip(
-    reserve.symbol,
-    currentMarket,
-    ProtocolAction.borrow
-  );
+  const offboardingDiscussion = AssetsBeingOffboarded[currentMarket]?.[reserve.symbol];
 
   return (
     <ListItem
@@ -80,6 +68,7 @@ export const MarketAssetsListItem = ({ ...reserve }: ComputedReserveData) => {
         </Box>
         {reserve.symbol === 'AMPL' && <AMPLToolTip />}
         {reserve.symbol === 'renFIL' && <RenFILToolTip />}
+        {offboardingDiscussion && <OffboardingTooltip discussionLink={offboardingDiscussion} />}
       </ListColumn>
 
       <ListColumn>
@@ -94,17 +83,6 @@ export const MarketAssetsListItem = ({ ...reserve }: ComputedReserveData) => {
           symbol={reserve.symbol}
           variant="main16"
           symbolsVariant="secondary16"
-          tooltip={
-            <>
-              {externalIncentivesTooltipsSupplySide.superFestRewards && <SuperFestTooltip />}
-              {externalIncentivesTooltipsSupplySide.spkAirdrop && <SpkAirdropTooltip />}
-            </>
-          }
-        />
-        <MeritIncentivesButton
-          symbol={reserve.symbol}
-          market={currentMarket}
-          protocolAction={ProtocolAction.supply}
         />
       </ListColumn>
 
@@ -126,22 +104,24 @@ export const MarketAssetsListItem = ({ ...reserve }: ComputedReserveData) => {
           symbol={reserve.symbol}
           variant="main16"
           symbolsVariant="secondary16"
-          tooltip={
-            <>
-              {externalIncentivesTooltipsBorrowSide.superFestRewards && <SuperFestTooltip />}
-              {externalIncentivesTooltipsBorrowSide.spkAirdrop && <SpkAirdropTooltip />}
-            </>
-          }
-        />
-        <MeritIncentivesButton
-          symbol={reserve.symbol}
-          market={currentMarket}
-          protocolAction={ProtocolAction.borrow}
         />
         {!reserve.borrowingEnabled &&
           Number(reserve.totalVariableDebt) > 0 &&
           !reserve.isFrozen && <ReserveSubheader value={'Disabled'} />}
       </ListColumn>
+      {/*
+      <ListColumn>
+        <IncentivesCard
+          value={Number(reserve.totalStableDebtUSD) > 0 ? reserve.stableBorrowAPY : '-1'}
+          incentives={reserve.sIncentivesData || []}
+          symbol={reserve.symbol}
+          variant="main16"
+          symbolsVariant="secondary16"
+        />
+        {!reserve.borrowingEnabled && Number(reserve.totalStableDebt) > 0 && !reserve.isFrozen && (
+          <ReserveSubheader value={'Disabled'} />
+        )}
+      </ListColumn> */}
 
       <ListColumn minWidth={95} maxWidth={95} align="right">
         <Button

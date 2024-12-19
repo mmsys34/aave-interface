@@ -2,7 +2,6 @@ import { createContext, useContext } from 'react';
 import { ApprovedAmountService } from 'src/services/ApprovedAmountService';
 import { ERC20Service } from 'src/services/Erc20Service';
 import { MigrationService } from 'src/services/MigrationService';
-import { StkAbptMigrationService } from 'src/services/StkAbptMigrationService';
 import { TokenWrapperService } from 'src/services/TokenWrapperService';
 import { UiIncentivesService } from 'src/services/UIIncentivesService';
 import { UiPoolService } from 'src/services/UIPoolService';
@@ -17,7 +16,6 @@ interface SharedDependenciesContext {
   uiIncentivesService: UiIncentivesService;
   uiPoolService: UiPoolService;
   tokenWrapperService: TokenWrapperService;
-  stkAbptMigrationService: StkAbptMigrationService;
   migrationService: MigrationService;
   erc20Service: ERC20Service;
 }
@@ -27,9 +25,9 @@ const SharedDependenciesContext = createContext<SharedDependenciesContext | null
 export const SharedDependenciesProvider: React.FC = ({ children }) => {
   const currentMarketData = useRootStore((state) => state.currentMarketData);
 
+  // services
   const poolTokensBalanceService = new WalletBalanceService(getProvider);
   const approvedAmountService = new ApprovedAmountService(getProvider);
-  const stkAbptMigrationService = new StkAbptMigrationService();
   const migrationService = new MigrationService(getProvider);
 
   const uiPoolService = new UiPoolService(getProvider);
@@ -48,7 +46,6 @@ export const SharedDependenciesProvider: React.FC = ({ children }) => {
         uiPoolService,
         uiIncentivesService,
         tokenWrapperService,
-        stkAbptMigrationService,
         migrationService,
         erc20Service,
       }}

@@ -15,17 +15,12 @@ export type Reward = {
 
 export type EmodeCategory = {
   id: number;
+  ltv: number;
+  liquidationThreshold: number;
+  liquidationBonus: number;
+  priceSource: string;
   label: string;
-  ltv: string;
-  liquidationThreshold: string;
-  liquidationBonus: string;
-  assets: Array<{
-    underlyingAsset: string;
-    symbol: string;
-    iconSymbol: string;
-    collateral: boolean;
-    borrowable: boolean;
-  }>;
+  assets: string[];
 };
 
 export enum CollateralType {

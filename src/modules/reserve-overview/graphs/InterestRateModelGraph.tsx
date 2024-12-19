@@ -13,7 +13,7 @@ import { defaultStyles, TooltipWithBounds, withTooltip } from '@visx/tooltip';
 import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 import { BigNumber } from 'bignumber.js';
 import { bisector, max } from 'd3-array';
-import React, { useCallback, useMemo } from 'react';
+import React, { Fragment, useCallback, useMemo } from 'react';
 
 import type { Fields } from './InterestRateModelGraphContainer';
 
@@ -22,14 +22,19 @@ type TooltipData = Rate;
 type InterestRateModelType = {
   variableRateSlope1: string;
   variableRateSlope2: string;
+  stableRateSlope1: string;
+  stableRateSlope2: string;
+  stableBorrowRateEnabled?: boolean;
   optimalUsageRatio: string;
   utilizationRate: string;
   baseVariableBorrowRate: string;
+  baseStableBorrowRate: string;
   totalLiquidityUSD: string;
   totalDebtUSD: string;
 };
 
 type Rate = {
+  stableRate: number;
   variableRate: number;
   utilization: number;
 };
@@ -38,7 +43,9 @@ type Rate = {
 const getDate = (d: Rate) => d.utilization;
 const bisectDate = bisector<Rate, number>((d) => d.utilization).center;
 const getVariableBorrowRate = (d: Rate) => d.variableRate * 100;
+const getStableBorrowRate = (d: Rate) => d.stableRate * 100;
 const tooltipValueAccessors = {
+  stableBorrowRate: getStableBorrowRate,
   variableBorrowRate: getVariableBorrowRate,
   utilizationRate: () => 38,
 };
@@ -54,8 +61,11 @@ const step = 100 / resolution;
 function getRates({
   variableRateSlope1,
   variableRateSlope2,
+  stableRateSlope1,
+  stableRateSlope2,
   optimalUsageRatio,
   baseVariableBorrowRate,
+  baseStableBorrowRate,
 }: InterestRateModelType): Rate[] {
   const rates: Rate[] = [];
   const formattedOptimalUtilizationRate = normalizeBN(optimalUsageRatio, 25).toNumber();
@@ -65,12 +75,19 @@ function getRates({
     // When zero
     if (utilization === 0) {
       rates.push({
+        stableRate: 0,
         variableRate: 0,
         utilization,
       });
     }
     // When hovering below optimal utilization rate, actual data
     else if (utilization < formattedOptimalUtilizationRate) {
+      const theoreticalStableAPY = normalizeBN(
+        new BigNumber(baseStableBorrowRate).plus(
+          rayDiv(rayMul(stableRateSlope1, normalizeBN(utilization, -25)), optimalUsageRatio)
+        ),
+        27
+      ).toNumber();
       const theoreticalVariableAPY = normalizeBN(
         new BigNumber(baseVariableBorrowRate).plus(
           rayDiv(rayMul(variableRateSlope1, normalizeBN(utilization, -25)), optimalUsageRatio)
@@ -78,6 +95,7 @@ function getRates({
         27
       ).toNumber();
       rates.push({
+        stableRate: theoreticalStableAPY,
         variableRate: theoreticalVariableAPY,
         utilization,
       });
@@ -88,6 +106,12 @@ function getRates({
         normalizeBN(utilization, -25).minus(optimalUsageRatio),
         RAY.minus(optimalUsageRatio)
       );
+      const theoreticalStableAPY = normalizeBN(
+        new BigNumber(baseStableBorrowRate)
+          .plus(stableRateSlope1)
+          .plus(rayMul(stableRateSlope2, excess)),
+        27
+      ).toNumber();
       const theoreticalVariableAPY = normalizeBN(
         new BigNumber(baseVariableBorrowRate)
           .plus(variableRateSlope1)
@@ -95,6 +119,7 @@ function getRates({
         27
       ).toNumber();
       rates.push({
+        stableRate: theoreticalStableAPY,
         variableRate: theoreticalVariableAPY,
         utilization,
       });
@@ -164,7 +189,12 @@ export const InterestRateModelGraph = withTooltip<AreaProps, TooltipData>(
       [innerWidth]
     );
     const yValueScale = useMemo(() => {
-      const maxY = max(data, (d) => getVariableBorrowRate(d)) as number;
+      const maxY = reserve.stableBorrowRateEnabled
+        ? Math.max(
+            max(data, (d) => getStableBorrowRate(d)) as number,
+            max(data, (d) => getVariableBorrowRate(d)) as number
+          )
+        : (max(data, (d) => getVariableBorrowRate(d)) as number);
       return scaleLinear({
         range: [innerHeight, 0],
         domain: [0, (maxY || 0) * 1.1],
@@ -229,6 +259,18 @@ export const InterestRateModelGraph = withTooltip<AreaProps, TooltipData>(
               y={(d) => yValueScale(getVariableBorrowRate(d)) ?? 0}
               curve={curveMonotoneX}
             />
+
+            {/* Stable Borrow APR Line */}
+            {reserve.stableBorrowRateEnabled && (
+              <LinePath
+                stroke="#E7C6DF"
+                strokeWidth={2}
+                data={data}
+                x={(d) => dateScale(getDate(d)) ?? 0}
+                y={(d) => yValueScale(getStableBorrowRate(d)) ?? 0}
+                curve={curveMonotoneX}
+              />
+            )}
 
             {/* X Axis */}
             <AxisBottom
@@ -344,6 +386,31 @@ export const InterestRateModelGraph = withTooltip<AreaProps, TooltipData>(
                   strokeWidth={2}
                   pointerEvents="none"
                 />
+                {/* Stable borrow rate circle */}
+                {reserve.stableBorrowRateEnabled && (
+                  <Fragment key={'stable'}>
+                    <circle
+                      cx={tooltipLeft}
+                      cy={yValueScale(getStableBorrowRate(tooltipData)) + 1}
+                      r={4}
+                      fill="black"
+                      fillOpacity={0.1}
+                      stroke="black"
+                      strokeOpacity={0.1}
+                      strokeWidth={2}
+                      pointerEvents="none"
+                    />
+                    <circle
+                      cx={tooltipLeft}
+                      cy={yValueScale(getStableBorrowRate(tooltipData))}
+                      r={4}
+                      fill={accentColorDark}
+                      stroke="white"
+                      strokeWidth={2}
+                      pointerEvents="none"
+                    />
+                  </Fragment>
+                )}
               </g>
             )}
           </Group>

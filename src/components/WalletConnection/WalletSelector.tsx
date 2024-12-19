@@ -113,6 +113,7 @@ export const WalletSelector = () => {
   const { breakpoints } = useTheme();
   const sm = useMediaQuery(breakpoints.down('sm'));
   const mainnetProvider = getENSProvider();
+  const [unsTlds] = useState<string[]>([]);
   const trackEvent = useRootStore((store) => store.trackEvent);
 
   let blockingError: ErrorType | undefined = undefined;
@@ -152,6 +153,21 @@ export const WalletSelector = () => {
       if (inputMockWalletAddress.slice(-4) === '.eth') {
         // Attempt to resolve ENS name and use resolved address if valid
         const resolvedAddress = await mainnetProvider.resolveName(inputMockWalletAddress);
+        if (resolvedAddress && utils.isAddress(resolvedAddress)) {
+          connectReadOnlyMode(resolvedAddress);
+        } else {
+          setValidAddressError(true);
+        }
+      } else if (unsTlds.includes(inputMockWalletAddress.split('.').pop() as string)) {
+        // Handle UNS names
+        const url = 'https://resolve.unstoppabledomains.com/domains/' + inputMockWalletAddress;
+        const options = {
+          method: 'GET',
+          headers: { Authorization: 'Bearer 01f60ca8-2dc3-457d-b12e-95ac2a7fb517' },
+        };
+        const response = await fetch(url, options);
+        const data = await response.json();
+        const resolvedAddress = data['meta']['owner'];
         if (resolvedAddress && utils.isAddress(resolvedAddress)) {
           connectReadOnlyMode(resolvedAddress);
         } else {
@@ -206,7 +222,7 @@ export const WalletSelector = () => {
             overflow: 'show',
             fontSize: sm ? '16px' : '14px',
           })}
-          placeholder="Enter ethereum address or ENS name"
+          placeholder="Enter ethereum address or username"
           fullWidth
           value={inputMockWalletAddress}
           onChange={(e) => setInputMockWalletAddress(e.target.value)}
@@ -227,7 +243,9 @@ export const WalletSelector = () => {
           fullWidth
           onClick={() => trackEvent(AUTH.MOCK_WALLET)}
           disabled={
-            !utils.isAddress(inputMockWalletAddress) && inputMockWalletAddress.slice(-4) !== '.eth'
+            !utils.isAddress(inputMockWalletAddress) &&
+            inputMockWalletAddress.slice(-4) !== '.eth' &&
+            !unsTlds.includes(inputMockWalletAddress.split('.').pop() as string)
           }
           aria-label="read-only mode address"
         >

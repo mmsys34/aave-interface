@@ -1,4 +1,8 @@
-import { API_ETH_MOCK_ADDRESS, synthetixProxyByChainId } from '@aave/contract-helpers';
+import {
+  API_ETH_MOCK_ADDRESS,
+  InterestRate,
+  synthetixProxyByChainId,
+} from '@aave/contract-helpers';
 import {
   BigNumberValue,
   calculateHealthFactorFromBalancesBigUnits,
@@ -16,7 +20,7 @@ import {
 import { useModalContext } from 'src/hooks/useModal';
 import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
 import { useRootStore } from 'src/store/root';
-import { displayGhoForMintableMarket } from 'src/utils/ghoUtilities';
+import { displayGho } from 'src/utils/ghoUtilities';
 import { getNetworkConfig } from 'src/utils/marketsAndNetworksConfig';
 
 import { Asset, AssetInput } from '../AssetInput';
@@ -41,8 +45,9 @@ export const RepayModalContent = ({
   tokenBalance,
   nativeBalance,
   isWrongNetwork,
+  debtType,
   user,
-}: ModalWrapperProps & { user: ExtendedFormattedUser }) => {
+}: ModalWrapperProps & { debtType: InterestRate; user: ExtendedFormattedUser }) => {
   const { gasLimit, mainTxState: repayTxState, txError } = useModalContext();
   const { marketReferencePriceInUsd } = useAppDataContext();
   const { currentChainId, currentMarketData, currentMarket } = useProtocolDataContext();
@@ -69,7 +74,10 @@ export const RepayModalContent = ({
 
   const repayWithATokens = tokenToRepayWith.address === poolReserve.aTokenAddress;
 
-  const debt = userReserve?.variableBorrows || '0';
+  const debt =
+    debtType === InterestRate.Stable
+      ? userReserve?.stableBorrows || '0'
+      : userReserve?.variableBorrows || '0';
   const debtUSD = new BigNumber(debt)
     .multipliedBy(poolReserve.formattedPriceInMarketReferenceCurrency)
     .multipliedBy(marketReferencePriceInUsd)
@@ -156,10 +164,7 @@ export const RepayModalContent = ({
       balance: maxReserveTokenForRepay.toString(10),
     });
     // push reserve aToken
-    if (
-      currentMarketData.v3 &&
-      !displayGhoForMintableMarket({ symbol: poolReserve.symbol, currentMarket })
-    ) {
+    if (currentMarketData.v3 && !displayGho({ symbol: poolReserve.symbol, currentMarket })) {
       const aTokenBalance = valueToBigNumber(underlyingBalance);
       const maxBalance = BigNumber.max(
         aTokenBalance,
@@ -283,6 +288,7 @@ export const RepayModalContent = ({
         }
         isWrongNetwork={isWrongNetwork}
         symbol={modalSymbol}
+        debtType={debtType}
         repayWithATokens={repayWithATokens}
       />
     </>

@@ -15,7 +15,7 @@ import { useState } from 'react';
 import { getMarketInfoById, MarketLogo } from 'src/components/MarketSwitcher';
 import { useProtocolDataContext } from 'src/hooks/useProtocolDataContext';
 import { useWeb3Context } from 'src/libs/hooks/useWeb3Context';
-import { displayGhoForMintableMarket } from 'src/utils/ghoUtilities';
+import { displayGho } from 'src/utils/ghoUtilities';
 
 import { TopInfoPanel } from '../../components/TopInfoPanel/TopInfoPanel';
 import { TopInfoPanelItem } from '../../components/TopInfoPanel/TopInfoPanelItem';
@@ -35,7 +35,7 @@ export const ReserveTopDetailsWrapper = ({ underlyingAsset }: ReserveTopDetailsP
   const router = useRouter();
   const { reserves, loading } = useAppDataContext();
   const { currentMarket, currentChainId } = useProtocolDataContext();
-  const { market, logo } = getMarketInfoById(currentMarket);
+  const { market, network } = getMarketInfoById(currentMarket);
   const { addERC20Token, switchNetwork, chainId: connectedChainId, connected } = useWeb3Context();
 
   const theme = useTheme();
@@ -75,7 +75,7 @@ export const ReserveTopDetailsWrapper = ({ underlyingAsset }: ReserveTopDetailsP
     );
   };
 
-  const isGho = displayGhoForMintableMarket({ symbol: poolReserve.symbol, currentMarket });
+  const isGho = displayGho({ symbol: poolReserve.symbol, currentMarket });
 
   return (
     <TopInfoPanel
@@ -111,7 +111,7 @@ export const ReserveTopDetailsWrapper = ({ underlyingAsset }: ReserveTopDetailsP
             </Button>
 
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <MarketLogo size={20} logo={logo} />
+              <MarketLogo size={20} logo={network.networkLogoPath} />
               <Typography variant="subheader1" sx={{ color: 'common.white' }}>
                 {market.marketTitle} <Trans>Market</Trans>
               </Typography>

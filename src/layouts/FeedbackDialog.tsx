@@ -18,40 +18,16 @@ export const FeedbackModal = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [dirtyEmailField, setDirtyEmailField] = useState(false);
-
-  const onBlur = () => {
-    if (!dirtyEmailField) setDirtyEmailField(true);
-  };
 
   useEffect(() => {
     if (feedbackDialogOpen) {
       setSuccess(false);
       setError(false);
-      setEmailError('');
     }
   }, [feedbackDialogOpen]);
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const emailValue = e.target.value;
-    setEmail(emailValue);
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailValue)) {
-      setEmailError('Please enter a valid email address');
-    } else {
-      setEmailError('');
-    }
-  };
-
   const handleFeedbackSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (emailError || !email) {
-      setEmailError('Please enter a valid email address');
-      return;
-    }
 
     setIsLoading(true);
 
@@ -77,18 +53,11 @@ export const FeedbackModal = () => {
     } finally {
       setIsLoading(false);
       setValue('');
-      setEmail('');
     }
   };
 
-  const onClose = () => {
-    setEmailError('');
-    setValue('');
-    setDirtyEmailField(false);
-  };
-
   return (
-    <BasicModal open={feedbackDialogOpen} setOpen={setFeedbackOpen} closeCallback={onClose}>
+    <BasicModal open={feedbackDialogOpen} setOpen={setFeedbackOpen}>
       <Box
         sx={{
           display: 'flex',
@@ -178,12 +147,9 @@ export const FeedbackModal = () => {
 
                 <TextField
                   // label="Email"
-                  onBlur={onBlur}
                   fullWidth
                   value={email}
-                  onChange={handleEmailChange}
-                  error={dirtyEmailField && !!emailError}
-                  helperText={dirtyEmailField ? emailError : undefined}
+                  onChange={(e) => setEmail(e.target.value)}
                   sx={{ mb: 2 }}
                 />
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -209,7 +175,7 @@ export const FeedbackModal = () => {
                   }}
                 />
                 <Box display="flex" flexDirection={'row-reverse'} mt={3}>
-                  <Button disabled={!value || !!emailError} variant="contained" type="submit">
+                  <Button disabled={!value} variant="contained" type="submit">
                     <Trans>Send Feedback</Trans>
                   </Button>
                 </Box>

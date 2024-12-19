@@ -5,7 +5,6 @@ import { Link } from 'src/components/primitives/Link';
 import { useRootStore } from 'src/store/root';
 
 import DiscordIcon from '/public/icons/discord.svg';
-import LensLogoIcon from '/public/icons/lens-logo.svg';
 
 interface StyledLinkProps {
   onClick?: React.MouseEventHandler<HTMLAnchorElement>;
@@ -22,22 +21,17 @@ const StyledLink = styled(Link)<StyledLinkProps>(({ theme }) => ({
 
 const FOOTER_ICONS = [
   {
-    href: 'https://hey.xyz/u/aave',
-    icon: <LensLogoIcon />,
-    title: 'Aave',
-  },
-  {
-    href: 'https://twitter.com/aave',
+    href: 'https://x.com/More_Protocol',
     icon: <Twitter />,
     title: 'Lens',
   },
   {
-    href: 'https://discord.com/invite/aave',
+    href: 'https://discord.gg/VzGm75kN',
     icon: <DiscordIcon />,
     title: 'Discord',
   },
   {
-    href: 'https://github.com/aave',
+    href: 'https://github.com/moreLabsXYZ',
     icon: <GitHub />,
     title: 'Github',
   },
@@ -51,7 +45,7 @@ export function AppFooter() {
 
   const FOOTER_LINKS = [
     {
-      href: 'https://aave.com/terms-of-service',
+      href: 'https://aave.com/term-of-use/',
       label: <Trans>Terms</Trans>,
       key: 'Terms',
     },

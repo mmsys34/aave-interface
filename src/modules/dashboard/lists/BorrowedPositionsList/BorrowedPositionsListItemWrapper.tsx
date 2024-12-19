@@ -3,18 +3,10 @@ import { DashboardReserve } from 'src/utils/dashboardSortUtils';
 
 import { BorrowedPositionsListItem } from './BorrowedPositionsListItem';
 
-export interface BorrowedPositionsListItemWrapperProps {
-  item: DashboardReserve;
-  disableEModeSwitch: boolean;
-}
-
-export const BorrowedPositionsListItemWrapper = ({
-  item,
-  disableEModeSwitch,
-}: BorrowedPositionsListItemWrapperProps) => {
+export const BorrowedPositionsListItemWrapper = ({ item }: { item: DashboardReserve }) => {
   return (
     <AssetCapsProvider asset={item.reserve}>
-      <BorrowedPositionsListItem item={item} disableEModeSwitch={disableEModeSwitch} />
+      <BorrowedPositionsListItem item={item} />
     </AssetCapsProvider>
   );
 };

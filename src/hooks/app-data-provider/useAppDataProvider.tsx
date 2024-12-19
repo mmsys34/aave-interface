@@ -70,7 +70,7 @@ export const AppDataProvider: React.FC = ({ children }) => {
   const baseCurrencyData = reservesData?.baseCurrencyData;
   // user hooks
 
-  const eModes = formattedPoolReserves ? formatEmodes(formattedPoolReserves) : {};
+  const eModes = reservesData?.reservesData ? formatEmodes(reservesData.reservesData) : {};
 
   const { data: userReservesData, isLoading: userReservesDataLoading } =
     useUserPoolReservesHumanized(currentMarketData);

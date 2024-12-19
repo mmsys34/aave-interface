@@ -40,7 +40,6 @@ import {
   LPSupplyParamsType,
   LPSupplyWithPermitType,
 } from '@aave/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
-import { AaveSafetyModule, AaveV3Ethereum } from '@bgd-labs/aave-address-book';
 import { BigNumber, PopulatedTransaction, Signature, utils } from 'ethers';
 import { splitSignature } from 'ethers/lib/utils';
 import { ClaimRewardsActionsProps } from 'src/components/transactions/ClaimRewards/ClaimRewardsActions';
@@ -50,6 +49,7 @@ import { SwapActionProps } from 'src/components/transactions/Swap/SwapActions';
 import { WithdrawAndSwitchActionProps } from 'src/components/transactions/Withdraw/WithdrawAndSwitchActions';
 import { Approval } from 'src/helpers/useTransactionHandler';
 import { FormattedReservesAndIncentives } from 'src/hooks/pool/usePoolFormattedReserves';
+import { optimizedPath } from 'src/utils/utils';
 import { StateCreator } from 'zustand';
 
 import { RootStore } from './root';
@@ -283,7 +283,7 @@ export const createPoolSlice: StateCreator<
       return pool.withdraw({
         ...args,
         user,
-        useOptimizedPath: false,
+        useOptimizedPath: optimizedPath(get().currentChainId),
       });
     },
     setUsageAsCollateral: async (args) => {
@@ -396,6 +396,7 @@ export const createPoolSlice: StateCreator<
       return JSON.stringify(typedData);
     },
     debtSwitch: ({
+      currentRateMode,
       poolReserve,
       amountToSwap,
       targetReserve,
@@ -433,7 +434,7 @@ export const createPoolSlice: StateCreator<
         user,
         debtAssetUnderlying: poolReserve.underlyingAsset,
         debtRepayAmount: isMaxSelected ? MAX_UINT_AMOUNT : amountToSwap,
-        debtRateMode: 2, // variable
+        debtRateMode: currentRateMode,
         newAssetUnderlying: targetReserve.underlyingAsset,
         newAssetDebtToken: targetReserve.variableDebtTokenAddress,
         maxNewDebtAmount: amountToReceive,
@@ -661,6 +662,9 @@ export const createPoolSlice: StateCreator<
         if (reserve.vIncentivesData && reserve.vIncentivesData.length > 0) {
           allReserves.push(reserve.variableDebtTokenAddress);
         }
+        if (reserve.sIncentivesData && reserve.sIncentivesData.length > 0) {
+          allReserves.push(reserve.stableDebtTokenAddress);
+        }
       });
 
       const incentivesTxBuilder = new IncentivesController(get().jsonRpcProvider());
@@ -695,19 +699,18 @@ export const createPoolSlice: StateCreator<
       }
     },
     useOptimizedPath: () => {
-      return get().currentMarketData.v3 && false;
+      return get().currentMarketData.v3 && optimizedPath(get().currentChainId);
     },
     poolComputed: {
       get minRemainingBaseTokenBalance() {
-        if (!get()) return '0.001';
         return '0.001';
       },
     },
     generateSignatureRequest: async ({ token, amount, deadline, spender }, opts = {}) => {
       const v3Tokens = [
-        AaveV3Ethereum.ASSETS.AAVE.UNDERLYING.toLowerCase(),
-        AaveV3Ethereum.ASSETS.AAVE.A_TOKEN.toLowerCase(),
-        AaveSafetyModule.STK_AAVE.toLowerCase(),
+        '0xe0fd0a2a4c2e59a479aab0cf44244e355c508766',
+        '0xe0fd0a2a4c2e59a479aab0cf44244e355c508766',
+        '0xe0fd0a2a4c2e59a479aab0cf44244e355c508766',
       ];
 
       const provider = get().jsonRpcProvider(opts.chainId);

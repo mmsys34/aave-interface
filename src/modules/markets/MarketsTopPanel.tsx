@@ -11,6 +11,7 @@ import { useAppDataContext } from '../../hooks/app-data-provider/useAppDataProvi
 
 export const MarketsTopPanel = () => {
   const { reserves, loading } = useAppDataContext();
+
   const theme = useTheme();
   const downToSM = useMediaQuery(theme.breakpoints.down('sm'));
 

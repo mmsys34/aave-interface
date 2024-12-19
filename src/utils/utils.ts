@@ -1,7 +1,5 @@
-import { ProtocolAction } from '@aave/contract-helpers';
+import { ChainId } from '@aave/contract-helpers';
 import { BigNumberValue, USD_DECIMALS, valueToBigNumber } from '@aave/math-utils';
-
-import { CustomMarket } from './marketsAndNetworksConfig';
 
 export function hexToAscii(_hex: string): string {
   const hex = _hex.toString();
@@ -35,6 +33,20 @@ export const makeCancelable = <T>(promise: Promise<T>) => {
   };
 };
 
+export const optimizedPath = (currentChainId: ChainId) => {
+  return (
+    currentChainId === ChainId.arbitrum_one || currentChainId === ChainId.optimism
+    // ||
+    // currentChainId === ChainId.optimism_kovan
+  );
+};
+
+// Overrides for minimum base token remaining after performing an action
+export const minBaseTokenRemainingByNetwork: Record<number, string> = {
+  [ChainId.optimism]: '0.0001',
+  [ChainId.arbitrum_one]: '0.0001',
+};
+
 export const amountToUsd = (
   amount: BigNumberValue,
   formattedPriceInMarketReferenceCurrency: string,
@@ -59,42 +71,4 @@ export const roundToTokenDecimals = (inputValue: string, tokenDecimals: number) 
 
   // Combine the whole and adjusted decimal parts
   return whole + '.' + adjustedDecimals;
-};
-
-export type ExternalIncentivesTooltipsConfig = {
-  superFestRewards: boolean;
-  spkAirdrop: boolean;
-};
-
-export const showExternalIncentivesTooltip = (
-  symbol: string,
-  currentMarket: string,
-  protocolAction?: ProtocolAction
-) => {
-  const superFestRewardsEnabled = false;
-  const spkRewardsEnabled = true;
-
-  const tooltipsConfig: ExternalIncentivesTooltipsConfig = {
-    superFestRewards: false,
-    spkAirdrop: false,
-  };
-
-  if (
-    superFestRewardsEnabled &&
-    protocolAction === ProtocolAction.supply &&
-    (symbol == 'ETH' || symbol == 'WETH' || symbol == 'wstETH')
-  ) {
-    tooltipsConfig.superFestRewards = true;
-  }
-
-  if (
-    spkRewardsEnabled &&
-    currentMarket === CustomMarket.proto_mainnet_v3 &&
-    protocolAction === ProtocolAction.supply &&
-    symbol == 'USDS'
-  ) {
-    tooltipsConfig.spkAirdrop = true;
-  }
-
-  return tooltipsConfig;
 };
