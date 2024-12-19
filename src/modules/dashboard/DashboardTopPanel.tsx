@@ -16,6 +16,7 @@ import { useRootStore } from 'src/store/root';
 import { selectIsMigrationAvailable } from 'src/store/v3MigrationSelectors';
 import { DASHBOARD, GENERAL } from 'src/utils/mixPanelEvents';
 
+import HALLink from '../../components/HALLink';
 import { HealthFactorNumber } from '../../components/HealthFactorNumber';
 import { FormattedNumber } from '../../components/primitives/FormattedNumber';
 import { NoData } from '../../components/primitives/NoData';
@@ -194,7 +195,15 @@ export const DashboardTopPanel = () => {
                 trackEvent(DASHBOARD.VIEW_RISK_DETAILS);
                 setOpen(true);
               }}
-              HALIntegrationComponent={currentMarketData.halIntegration}
+              HALIntegrationComponent={
+                currentMarketData.halIntegration && (
+                  <HALLink
+                    healthFactor={user?.healthFactor || '-1'}
+                    marketName={currentMarketData.halIntegration.marketName}
+                    integrationURL={currentMarketData.halIntegration.URL}
+                  />
+                )
+              }
             />
           </TopInfoPanelItem>
         )}
