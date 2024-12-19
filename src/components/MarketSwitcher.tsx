@@ -161,7 +161,7 @@ export const MarketSwitcher = () => {
                       color: '#fff',
                       px: 2,
                       borderRadius: '12px',
-                      background: (theme) => theme.palette.gradients.aaveGradient,
+                      background: (theme) => theme.palette.gradients.newGradient,
                     }}
                   >
                     <Typography variant="subheader2">V3</Typography>
@@ -208,7 +208,7 @@ export const MarketSwitcher = () => {
       <Box>
         <Typography variant="subheader2" color="text.secondary" sx={{ px: 4, pt: 2 }}>
           <Trans>
-            {ENABLE_TESTNET || STAGING_ENV ? 'Select Aave Testnet Market' : 'Select Aave Market'}
+            {ENABLE_TESTNET || STAGING_ENV ? 'Select More Testnet Market' : 'Select More Market'}
           </Trans>
         </Typography>
       </Box>

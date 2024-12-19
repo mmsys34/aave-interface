@@ -19,9 +19,9 @@ export const InterestRateModelGraphContainer = ({
 }: InteresetRateModelGraphContainerProps): JSX.Element => {
   const CHART_HEIGHT = 155;
   const fields: Fields = [
-    { name: 'variableBorrowRate', text: 'Borrow APR, variable', color: '#B6509E' },
+    { name: 'variableBorrowRate', text: 'Borrow APR, variable', color: '#F58420' },
     ...(reserve.stableBorrowRateEnabled
-      ? ([{ name: 'stableBorrowRate', text: 'Borrow APR, stable', color: '#E7C6DF' }] as const)
+      ? ([{ name: 'stableBorrowRate', text: 'Borrow APR, stable', color: '#FCB319' }] as const)
       : []),
   ];
 
@@ -35,7 +35,7 @@ export const InterestRateModelGraphContainer = ({
           mb: 4,
         }}
       >
-        <GraphLegend labels={[...fields, { text: 'Utilization Rate', color: '#0062D2' }]} />
+        <GraphLegend labels={[...fields, { text: 'Utilization Rate', color: '#07B4D1' }]} />
       </Box>
       <ParentSize>
         {({ width }) => (

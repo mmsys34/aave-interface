@@ -38,41 +38,48 @@ const FOOTER_ICONS = [
 ];
 
 export function AppFooter() {
-  const [setAnalyticsConfigOpen, setFeedbackOpen] = useRootStore((store) => [
-    store.setAnalyticsConfigOpen,
-    store.setFeedbackOpen,
-  ]);
+  // const [setAnalyticsConfigOpen, setFeedbackOpen] = useRootStore((store) => [
+  //   store.setAnalyticsConfigOpen,
+  //   store.setFeedbackOpen,
+  // ]);
+
+  const [setAnalyticsConfigOpen] = useRootStore((store) => [store.setAnalyticsConfigOpen]);
 
   const FOOTER_LINKS = [
     {
-      href: 'https://aave.com/term-of-use/',
+      href: '#',
       label: <Trans>Terms</Trans>,
       key: 'Terms',
     },
     {
-      href: 'https://aave.com/privacy-policy/',
+      href: '#',
       label: <Trans>Privacy</Trans>,
       key: 'Privacy',
     },
     {
-      href: 'https://docs.aave.com/hub/',
+      href: 'https://docs.more.markets/',
       label: <Trans>Docs</Trans>,
       key: 'Docs',
     },
     {
-      href: 'https://docs.aave.com/faq/',
-      label: <Trans>FAQS</Trans>,
-      key: 'FAQS',
-    },
-    {
-      href: 'https://discord.com/invite/aave',
+      href: 'https://discord.gg/XnU7hHQgYF',
       label: <Trans>Send feedback</Trans>,
       key: 'Send feedback',
-      onClick: (event: React.MouseEvent) => {
-        event.preventDefault();
-        setFeedbackOpen(true);
-      },
     },
+    // {
+    //   href: 'https://docs.aave.com/faq/',
+    //   label: <Trans>FAQS</Trans>,
+    //   key: 'FAQS',
+    // },
+    // {
+    //   href: 'https://discord.com/invite/aave',
+    //   label: <Trans>Send feedback</Trans>,
+    //   key: 'Send feedback',
+    //   onClick: (event: React.MouseEvent) => {
+    //     event.preventDefault();
+    //     setFeedbackOpen(true);
+    //   },
+    // },
     {
       href: '/',
       label: <Trans>Manage analytics</Trans>,

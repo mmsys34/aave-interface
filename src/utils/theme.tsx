@@ -186,7 +186,8 @@ export const getDesignTokens = (mode: 'light' | 'dark') => {
         paper: getColor('#FFFFFF', '#292E41'),
         surface: getColor('#F7F7F9', '#383D51'),
         surface2: getColor('#F9F9FB', '#383D51'),
-        header: getColor('#2B2D3C', '#1B2030'),
+        // header: getColor('#2B2D3C', '#1B2030'),
+        header: getColor('#111017', '#111017'),
         disabled: getColor('#EAEBEF', '#EBEBEF14'),
       },
       divider: getColor('#EAEBEF', '#EBEBEF14'),
@@ -203,7 +204,7 @@ export const getDesignTokens = (mode: 'light' | 'dark') => {
       },
       gradients: {
         aaveGradient: 'linear-gradient(248.86deg, #B6509E 10.51%, #2EBAC6 93.41%)',
-        newGradient: 'linear-gradient(79.67deg, #8C3EBC 0%, #007782 95.82%)',
+        newGradient: 'linear-gradient(79.67deg, #F58420 0%, #F58420 6%, #FCB319 100%)',
       },
     },
     spacing: 4,
