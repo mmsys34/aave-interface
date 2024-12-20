@@ -81,6 +81,7 @@ export const marketsData: {
       debtSwitch: false,
       switch: false,
     },
+    permitDisabled: true,
     subgraphUrl: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v3',
     addresses: {
       LENDING_POOL_ADDRESS_PROVIDER: '0xEe5C46a2Ed7c985e10852b364472c86B7FDE9488',
