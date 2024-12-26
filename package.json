@@ -1,5 +1,5 @@
 {
-  "name": "aave-ui",
+  "name": "moremarkets-ui",
   "version": "1.0.0",
   "private": true,
   "license": "BSD-3-Clause",
@@ -134,20 +134,6 @@
   "resolutions": {
     "@web3-react/walletlink-connector/@coinbase/wallet-sdk": "3.1.0"
   },
-  "contributors": [
-    "Anastasia Khovaeva <anastasia@aave.com>",
-    "Andrew Schmidt <andrew@aave.com>",
-    "David Racero <david.k@aave.com>",
-    "Diego Prudencio <diego@aave.com>",
-    "Drew Cook <drew.c@aave.com>",
-    "Lukas Strassel <lukas@aave.com>",
-    "Mark Grothe <mark.g@aave.com",
-    "Mark Hinschberger <mark@aave.com>",
-    "Nikita Bokarev <nikita@aave.com>",
-    "Oleksandr Tkach <oleksandr@aave.com>",
-    "Pol Sendra <pol@aave.com>",
-    "Vladimir Konstantinovich Yumatov <vladimir@aave.com>"
-  ],
   "lint-staged": {
     "!(.prettierignore)*.*": "yarn lint:fix",
     "*.svg": "npx svgo --final-newline"

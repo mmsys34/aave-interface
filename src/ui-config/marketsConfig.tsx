@@ -100,7 +100,7 @@ export const marketsData: {
     },
     halIntegration: {
       URL: 'https://app.hal.xyz/recipes/aave-v3-track-health-factor',
-      marketName: 'aavev3',
+      marketName: 'MoreMarkets',
     },
   },
 } as const;
