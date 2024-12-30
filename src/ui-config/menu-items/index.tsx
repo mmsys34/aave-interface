@@ -13,12 +13,6 @@ interface Navigation {
   dataCy?: string;
 }
 
-console.log(
-  process.env.NEXT_PUBLIC_ENV,
-  process.env.NEXT_PUBLIC_ENABLE_STAKING,
-  process.env.NEXT_PUBLIC_ENABLE_GOVERNANCE
-);
-
 export const navigation: Navigation[] = [
   {
     link: ROUTES.dashboard,
