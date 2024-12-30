@@ -110,7 +110,7 @@ export const TOKEN_LIST: TokenList = {
       address: '0xbC462009560a9270bdB9A2bFA2efa1AD533793eb',
       name: 'USDC.e',
       symbol: 'USDC.e',
-      decimals: 18,
+      decimals: 6,
       logoURI: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png',
     },
     {
@@ -118,10 +118,18 @@ export const TOKEN_LIST: TokenList = {
       address: '0x30F44C64725727F2001E6C1eF6e6CE9c7aB91dC3',
       name: 'Coinbase Wrapped BTC',
       symbol: 'cbBTC',
-      decimals: 18,
+      decimals: 8,
       logoURI: 'https://assets.coingecko.com/coins/images/40143/large/cbbtc.webp',
     },
     // mainnet tokens
+    {
+      chainId: ChainIds.flowEVMMainnet,
+      address: '0xd3bF53DAC106A0290B0483EcBC89d40FcC961f3e',
+      name: 'Wrapped FLOW',
+      symbol: 'WFLOW',
+      decimals: 18,
+      logoURI: 'https://cryptologos.cc/logos/flow-flow-logo.svg',
+    },
     {
       chainId: ChainIds.flowEVMMainnet,
       address: '0x1b97100eA1D7126C4d60027e231EA4CB25314bdb',
@@ -133,11 +141,19 @@ export const TOKEN_LIST: TokenList = {
     },
     {
       chainId: ChainIds.flowEVMMainnet,
-      address: '0xd3bF53DAC106A0290B0483EcBC89d40FcC961f3e',
-      name: 'Wrapped FLOW',
-      symbol: 'WFLOW',
-      decimals: 18,
-      logoURI: 'https://cryptologos.cc/logos/flow-flow-logo.svg',
+      address: '0x7f27352D5F83Db87a5A3E00f4B07Cc2138D8ee52',
+      name: 'USDC.e',
+      symbol: 'USDC.e',
+      decimals: 6,
+      logoURI: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png',
+    },
+    {
+      chainId: ChainIds.flowEVMTestnet,
+      address: '0xA0197b2044D28b08Be34d98b23c9312158Ea9A18',
+      name: 'Coinbase Wrapped BTC',
+      symbol: 'cbBTC',
+      decimals: 8,
+      logoURI: 'https://assets.coingecko.com/coins/images/40143/large/cbbtc.webp',
     },
   ],
 };
