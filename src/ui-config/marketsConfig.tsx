@@ -60,7 +60,7 @@ export enum CustomMarket {
   // v3 test networks, all v3.0.1
   proto_testnet_v3 = 'proto_testnet_v3',
   // v3 mainnets
-  // proto_flow_v3 = 'proto_flow_v3',
+  proto_flow_v3 = 'proto_flow_v3',
 }
 
 export const marketsData: {
@@ -97,6 +97,35 @@ export const marketsData: {
       // GHO_UI_DATA_PROVIDER: AaveV3Ethereum.UI_GHO_DATA_PROVIDER,
       // WITHDRAW_SWITCH_ADAPTER: AaveV3Ethereum.WITHDRAW_SWAP_ADAPTER,
       // DEBT_SWITCH_ADAPTER: AaveV3Ethereum.DEBT_SWAP_ADAPTER,
+    },
+    halIntegration: {
+      URL: 'https://app.hal.xyz/recipes/aave-v3-track-health-factor',
+      marketName: 'MoreMarkets',
+    },
+  },
+  [CustomMarket.proto_flow_v3]: {
+    marketTitle: 'EVM on Flow',
+    market: CustomMarket.proto_flow_v3,
+    chainId: ChainIds.flowEVMMainnet,
+    v3: true,
+    enabledFeatures: {
+      governance: false,
+      staking: false,
+      liquiditySwap: false,
+      collateralRepay: false,
+      incentives: false,
+      withdrawAndSwitch: false,
+      debtSwitch: false,
+      switch: false,
+    },
+    permitDisabled: true,
+    subgraphUrl: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v3',
+    addresses: {
+      LENDING_POOL_ADDRESS_PROVIDER: '0x5fE2EFe476DC4b19d8160637E78e0ca93fAa7cB7',
+      LENDING_POOL: '0x743543B3061Ea88c89272C65D766d33F98Db6209',
+      WETH_GATEWAY: '0xA3F37226359C155A9A0115a300A56FA8ecD1C697',
+      WALLET_BALANCE_PROVIDER: '0xAE836c30C58e8Cfe6273C50b44CC7eD03D977586',
+      UI_POOL_DATA_PROVIDER: '0x99C53B7368a2F13571119df14b11d9BF80F3f62c',
     },
     halIntegration: {
       URL: 'https://app.hal.xyz/recipes/aave-v3-track-health-factor',

@@ -90,12 +90,37 @@ export const TOKEN_LIST: TokenList = {
     ...NETWORK_ASSETS,
     {
       chainId: ChainIds.flowEVMTestnet,
+      address: '0xd3bF53DAC106A0290B0483EcBC89d40FcC961f3e',
+      name: 'Wrapped FLOW',
+      symbol: 'WFLOW',
+      decimals: 18,
+      logoURI: 'https://cryptologos.cc/logos/flow-flow-logo.svg',
+    },
+    {
+      chainId: ChainIds.flowEVMTestnet,
       address: '0x8E3DC6E937B560ce6a1Aaa78AfC775228969D16c',
       name: 'ankr.FLOW',
       symbol: 'ankr.FLOW',
       decimals: 18,
       logoURI:
         'https://cdn.prod.website-files.com/60f008ba9757da0940af288e/66d7ac533430f79fc1f19a73_ankr-p-500.jpg',
+    },
+    {
+      chainId: ChainIds.flowEVMMainnet,
+      address: '0x1b97100eA1D7126C4d60027e231EA4CB25314bdb',
+      name: 'ankr.FLOW',
+      symbol: 'ankr.FLOW',
+      decimals: 18,
+      logoURI:
+        'https://cdn.prod.website-files.com/60f008ba9757da0940af288e/66d7ac533430f79fc1f19a73_ankr-p-500.jpg',
+    },
+    {
+      chainId: ChainIds.flowEVMMainnet,
+      address: '0xd3bF53DAC106A0290B0483EcBC89d40FcC961f3e',
+      name: 'Wrapped FLOW',
+      symbol: 'WFLOW',
+      decimals: 18,
+      logoURI: 'https://cryptologos.cc/logos/flow-flow-logo.svg',
     },
   ],
 };
