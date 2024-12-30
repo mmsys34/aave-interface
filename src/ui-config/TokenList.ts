@@ -106,6 +106,23 @@ export const TOKEN_LIST: TokenList = {
         'https://cdn.prod.website-files.com/60f008ba9757da0940af288e/66d7ac533430f79fc1f19a73_ankr-p-500.jpg',
     },
     {
+      chainId: ChainIds.flowEVMTestnet,
+      address: '0xbC462009560a9270bdB9A2bFA2efa1AD533793eb',
+      name: 'USDC.e',
+      symbol: 'USDC.e',
+      decimals: 18,
+      logoURI: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png',
+    },
+    {
+      chainId: ChainIds.flowEVMTestnet,
+      address: '0x30F44C64725727F2001E6C1eF6e6CE9c7aB91dC3',
+      name: 'Coinbase Wrapped BTC',
+      symbol: 'cbBTC',
+      decimals: 18,
+      logoURI: 'https://assets.coingecko.com/coins/images/40143/large/cbbtc.webp',
+    },
+    // mainnet tokens
+    {
       chainId: ChainIds.flowEVMMainnet,
       address: '0x1b97100eA1D7126C4d60027e231EA4CB25314bdb',
       name: 'ankr.FLOW',
