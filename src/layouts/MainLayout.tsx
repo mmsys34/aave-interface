@@ -6,7 +6,7 @@ import { FORK_ENABLED } from 'src/utils/marketsAndNetworksConfig';
 
 import { AppFooter } from './AppFooter';
 import { AppHeader } from './AppHeader';
-import TopBarNotify from './TopBarNotify';
+// import TopBarNotify from './TopBarNotify';
 
 export function MainLayout({ children }: { children: ReactNode }) {
   return (
