@@ -47,6 +47,11 @@ const DebtSwitchModal = dynamic(() =>
     (module) => module.DebtSwitchModal
   )
 );
+const RateSwitchModal = dynamic(() =>
+  import('src/components/transactions/RateSwitch/RateSwitchModal').then(
+    (module) => module.RateSwitchModal
+  )
+);
 const EmodeModal = dynamic(() =>
   import('src/components/transactions/Emode/EmodeModal').then((module) => module.EmodeModal)
 );
@@ -139,6 +144,7 @@ export default function MyApp(props: MyAppProps) {
                           <RepayModal />
                           <CollateralChangeModal />
                           <DebtSwitchModal />
+                          <RateSwitchModal />
                           <ClaimRewardsModal />
                           <EmodeModal />
                           <SwapModal />
