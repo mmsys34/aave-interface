@@ -131,7 +131,7 @@ export const MarketAssetsListContainer = () => {
                   href="https://governance.aave.com"
                   underline="always"
                 >
-                  Aave governance forum
+                  More governance forum
                 </Link>{' '}
                 for further updates.
               </Trans>

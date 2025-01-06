@@ -45,7 +45,7 @@ msgid "<0>Ampleforth</0> is a rebasing asset. Visit the <1>documentation</1> to 
 msgstr "<0>Ampleforth</0> est un actif de rebasage. Consultez la <1>documentation</1> pour en savoir plus."
 
 #: src/components/transactions/Borrow/ParameterChangewarning.tsx
-msgid "<0>Attention:</0> Parameter changes via governance can alter your account health factor and risk of liquidation. Follow the <1>Aave governance forum</1> for updates."
+msgid "<0>Attention:</0> Parameter changes via governance can alter your account health factor and risk of liquidation. Follow the <1>More governance forum</1> for updates."
 msgstr "<0>Attention:</0> Les changements de paramètres via la gouvernance peuvent modifier le facteur de santé de votre compte et le risque de liquidation. Suivez le <1>forum de gouvernance d’Aave</1> pour les mises à jour."
 
 #: src/modules/dashboard/lists/SlippageList.tsx
@@ -2551,7 +2551,7 @@ msgid "There was some error. Please try changing the parameters or <0><1>copy th
 msgstr "Il y a eu une erreur. Veuillez essayer de modifier les paramètres ou <0><1>copier l'erreur</1></0>"
 
 #: src/modules/markets/MarketAssetsListContainer.tsx
-msgid "These assets are temporarily frozen or paused by Aave community decisions, meaning that further supply / borrow, or rate swap of these assets are unavailable. Withdrawals and debt repayments are allowed. Follow the <0>Aave governance forum</0> for further updates."
+msgid "These assets are temporarily frozen or paused by Aave community decisions, meaning that further supply / borrow, or rate swap of these assets are unavailable. Withdrawals and debt repayments are allowed. Follow the <0>More governance forum</0> for further updates."
 msgstr "Ces actifs sont temporairement gelés ou suspendus par des décisions de la communauté Aave, ce qui signifie qu’il n’est pas possible d’obtenir / emprunter ou d’échanger des taux de ces actifs. Les retraits et les remboursements de dettes sont autorisés. Suivez le <0>forum de gouvernance d’Aave pour d’autres</0> mises à jour."
 
 #: src/components/transactions/Withdraw/WithdrawError.tsx

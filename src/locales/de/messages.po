@@ -45,7 +45,7 @@ msgid "<0>Ampleforth</0> is a rebasing asset. Visit the <1>documentation</1> to 
 msgstr "<0>Ampleforth</0> ist ein Rebasing-Asset. Weitere Informationen finden Sie in der <1>Dokumentation</1> ."
 
 #: src/components/transactions/Borrow/ParameterChangewarning.tsx
-msgid "<0>Attention:</0> Parameter changes via governance can alter your account health factor and risk of liquidation. Follow the <1>Aave governance forum</1> for updates."
+msgid "<0>Attention:</0> Parameter changes via governance can alter your account health factor and risk of liquidation. Follow the <1>More governance forum</1> for updates."
 msgstr "<0>Aufmerksamkeit:</0> Parameteränderungen über die Governance können den Gesundheitsfaktor Ihres Kontos und das Liquidationsrisiko verändern. Folgen Sie dem <1>Aave-Governance-Forum</1> , um Updates zu erhalten."
 
 #: src/modules/dashboard/lists/SlippageList.tsx
@@ -2551,7 +2551,7 @@ msgid "There was some error. Please try changing the parameters or <0><1>copy th
 msgstr "Es ist ein Fehler aufgetreten. Bitte versuchen Sie, die Parameter zu ändern, oder <0><1>kopieren Sie den Fehler</1></0>"
 
 #: src/modules/markets/MarketAssetsListContainer.tsx
-msgid "These assets are temporarily frozen or paused by Aave community decisions, meaning that further supply / borrow, or rate swap of these assets are unavailable. Withdrawals and debt repayments are allowed. Follow the <0>Aave governance forum</0> for further updates."
+msgid "These assets are temporarily frozen or paused by Aave community decisions, meaning that further supply / borrow, or rate swap of these assets are unavailable. Withdrawals and debt repayments are allowed. Follow the <0>More governance forum</0> for further updates."
 msgstr "Diese Vermögenswerte werden durch Entscheidungen der Aave-Community vorübergehend eingefroren oder pausiert, was bedeutet, dass weitere Lieferungen/Kredite oder Zinsswaps dieser Vermögenswerte nicht verfügbar sind. Abhebungen und Schuldentilgungen sind erlaubt. Folgen Sie dem <0>Aave-Governance-Forum</0> für weitere Updates."
 
 #: src/components/transactions/Withdraw/WithdrawError.tsx

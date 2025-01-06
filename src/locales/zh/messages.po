@@ -45,7 +45,7 @@ msgid "<0>Ampleforth</0> is a rebasing asset. Visit the <1>documentation</1> to 
 msgstr "<0>Ampleforth</0> 是变基资产。请访问 <1>文档</1> 以了解更多信息。"
 
 #: src/components/transactions/Borrow/ParameterChangewarning.tsx
-msgid "<0>Attention:</0> Parameter changes via governance can alter your account health factor and risk of liquidation. Follow the <1>Aave governance forum</1> for updates."
+msgid "<0>Attention:</0> Parameter changes via governance can alter your account health factor and risk of liquidation. Follow the <1>More governance forum</1> for updates."
 msgstr "<0>注意力：</0> 通过监管更改参数可能会改变您的账户健康因素和清算风险。关注 <1>Aave 治理论坛</1> 以获取更新。"
 
 #: src/modules/dashboard/lists/SlippageList.tsx
@@ -2551,7 +2551,7 @@ msgid "There was some error. Please try changing the parameters or <0><1>copy th
 msgstr "有一些错误。请尝试更改参数或 <0><1>复制错误</1></0>"
 
 #: src/modules/markets/MarketAssetsListContainer.tsx
-msgid "These assets are temporarily frozen or paused by Aave community decisions, meaning that further supply / borrow, or rate swap of these assets are unavailable. Withdrawals and debt repayments are allowed. Follow the <0>Aave governance forum</0> for further updates."
+msgid "These assets are temporarily frozen or paused by Aave community decisions, meaning that further supply / borrow, or rate swap of these assets are unavailable. Withdrawals and debt repayments are allowed. Follow the <0>More governance forum</0> for further updates."
 msgstr "这些资产被 Aave 社区决定暂时冻结或暂停，这意味着这些资产的进一步供应/借款或利率互换不可用。允许提款和偿还债务。关注 <0>Aave 治理论坛</0> ，了解进一步的更新。"
 
 #: src/components/transactions/Withdraw/WithdrawError.tsx

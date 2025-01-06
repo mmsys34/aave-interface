@@ -45,7 +45,7 @@ msgid "<0>Ampleforth</0> is a rebasing asset. Visit the <1>documentation</1> to 
 msgstr "<0>Ampleforth</0> es un activo con rebase. Visita la <1>documentación</1> para aprender más."
 
 #: src/components/transactions/Borrow/ParameterChangewarning.tsx
-msgid "<0>Attention:</0> Parameter changes via governance can alter your account health factor and risk of liquidation. Follow the <1>Aave governance forum</1> for updates."
+msgid "<0>Attention:</0> Parameter changes via governance can alter your account health factor and risk of liquidation. Follow the <1>More governance forum</1> for updates."
 msgstr "<0>Atención:</0> Los cambios de parámetros a través de la gobernanza pueden alterar el factor de salud de tu cuenta y el riesgo de liquidación. Sigue el <1>foro de gobierno de Aave</1> para mantenerte actualizado."
 
 #: src/modules/dashboard/lists/SlippageList.tsx
@@ -2551,7 +2551,7 @@ msgid "There was some error. Please try changing the parameters or <0><1>copy th
 msgstr "Hubo un error. Por favor intenta cambiar los parámetros o <0><1>copiar el error</1></0>"
 
 #: src/modules/markets/MarketAssetsListContainer.tsx
-msgid "These assets are temporarily frozen or paused by Aave community decisions, meaning that further supply / borrow, or rate swap of these assets are unavailable. Withdrawals and debt repayments are allowed. Follow the <0>Aave governance forum</0> for further updates."
+msgid "These assets are temporarily frozen or paused by Aave community decisions, meaning that further supply / borrow, or rate swap of these assets are unavailable. Withdrawals and debt repayments are allowed. Follow the <0>More governance forum</0> for further updates."
 msgstr "Estos activos están temporalmente congelados o pausados por decisiones de la comunidad de Aave, lo que significa que no se puede suministrar / tomar prestado o intercambiar tasas de estos activos. Se permiten retiros y pagos de deuda. Sigue el <0>foro de gobierno de Aave</0> para más actualizaciones."
 
 #: src/components/transactions/Withdraw/WithdrawError.tsx
